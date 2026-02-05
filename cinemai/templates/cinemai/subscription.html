@@ -1,0 +1,122 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Subscription - CinemAI{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-5">Choose Your Plan</h2>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card p-4 text-center h-100">
+                <h3 class="mb-3">Basic</h3>
+                <h2 class="mb-4">$9.99<small class="text-muted">/month</small></h2>
+                <ul class="list-unstyled mb-4 text-start">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> AI Movie Recommendations</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Personal Watchlist</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Search History</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> 10 Searches per day</li>
+                </ul>
+                <button class="btn btn-primary subscribe-btn" data-tier="BASIC">
+                    Subscribe to Basic
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card p-4 text-center h-100 border border-primary border-3">
+                <span class="badge bg-primary mb-2">MOST POPULAR</span>
+                <h3 class="mb-3">Standard</h3>
+                <h2 class="mb-4">$14.99<small class="text-muted">/month</small></h2>
+                <ul class="list-unstyled mb-4 text-start">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Basic Features</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Unlimited Searches</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Advanced Filters</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Priority Support</li>
+                </ul>
+                <button class="btn btn-primary subscribe-btn" data-tier="STANDARD">
+                    Subscribe to Standard
+                </button>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card p-4 text-center h-100">
+                <h3 class="mb-3">Pro</h3>
+                <h2 class="mb-4">$19.99<small class="text-muted">/month</small></h2>
+                <ul class="list-unstyled mb-4 text-start">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Standard Features</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Custom AI Models</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Detailed Analytics</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Early Access to New Features</li>
+                </ul>
+                <button class="btn btn-primary subscribe-btn" data-tier="PRO">
+                    Subscribe to Pro
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card p-4">
+        <h4 class="mb-3">Current Subscription</h4>
+        <p><strong>Plan:</strong> {{ user.profile.get_subscription_tier_display }}</p>
+        <p><strong>Status:</strong> 
+            {% if user.profile.subscription_active %}
+                <span class="badge bg-success">Active</span>
+            {% else %}
+                <span class="badge bg-secondary">Inactive</span>
+            {% endif %}
+        </p>
+        {% if user.profile.subscription_end_date %}
+            <p><strong>Renewal Date:</strong> {{ user.profile.subscription_end_date|date:"M d, Y" }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    const stripe = Stripe('{{ stripe_public_key }}');
+    const subscribeBtns = document.querySelectorAll('.subscribe-btn');
+    
+    subscribeBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const tier = e.target.dataset.tier;
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+            
+            try {
+                const response = await fetch('{% url "create_checkout_session" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({ tier: tier })
+                });
+                
+                const data = await response.json();
+                
+                if (data.sessionId) {
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: data.sessionId
+                    });
+                    
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                } else {
+                    alert('Error creating checkout session');
+                }
+            } catch (error) {
+                alert('An error occurred. Please try again.');
+                console.error(error);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `Subscribe to ${tier.charAt(0) + tier.slice(1).toLowerCase()}`;
+            }
+        });
+    });
+</script>
+{% endblock %}
