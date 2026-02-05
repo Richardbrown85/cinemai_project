@@ -1,0 +1,42 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Update Watchlist - CinemAI{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h3 class="mb-4">Update: {{ watchlist_item.movie.title }}</h3>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3 form-check">
+                        {{ form.watched }}
+                        <label class="form-check-label" for="{{ form.watched.id_for_label }}">
+                            I've watched this movie
+                        </label>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="{{ form.notes.id_for_label }}" class="form-label">
+                            Notes
+                        </label>
+                        {{ form.notes }}
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary flex-fill">
+                            <i class="bi bi-save"></i> Save Changes
+                        </button>
+                        <a href="{% url 'watchlist' %}" class="btn btn-secondary flex-fill">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
