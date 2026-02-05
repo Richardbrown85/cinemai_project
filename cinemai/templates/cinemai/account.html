@@ -1,0 +1,57 @@
+{% extends 'cinema/base.html' %}
+
+{% block title %}Login - CinemAI{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4">
+                <h2 class="text-center mb-4">Welcome Back</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.username.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="text-danger small mt-1">
+                                {{ form.password.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3 text-end">
+                        <a href="{% url 'password_reset' %}" class="text-decoration-none small">
+                            Forgot password?
+                        </a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                    
+                    <p class="text-center mb-0">
+                        Don't have an account? 
+                        <a href="{% url 'signup' %}" class="text-decoration-none">Sign up here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
