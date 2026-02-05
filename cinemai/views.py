@@ -30,7 +30,7 @@ def home(request):
     context = {
         'user': request.user,
     }
-    return render(request, 'cinema/home.html', context)
+    return render(request, 'cinemai/home.html', context)
 
 
 def signup_view(request):
@@ -48,7 +48,7 @@ def signup_view(request):
     else:
         form = SignUpForm()
     
-    return render(request, 'cinema/signup.html', {'form': form})
+    return render(request, 'cinemai/signup.html', {'form': form})
 
 
 def login_view(request):
@@ -70,7 +70,7 @@ def login_view(request):
     else:
         form = LoginForm()
     
-    return render(request, 'cinema/login.html', {'form': form})
+    return render(request, 'cinemai/login.html', {'form': form})
 
 
 @login_required
@@ -101,7 +101,7 @@ def account_view(request):
         'user_form': user_form,
         'profile_form': profile_form,
     }
-    return render(request, 'cinema/account.html', context)
+    return render(request, 'cinemai/account.html', context)
 
 
 @login_required
@@ -113,7 +113,7 @@ def delete_account(request):
         user.delete()
         messages.success(request, 'Your account has been deleted.')
         return redirect('home')
-    return render(request, 'cinema/delete_account.html')
+    return render(request, 'cinemai/delete_account.html')
 
 
 @login_required
@@ -174,7 +174,7 @@ def search_movies(request):
         'movies': movies,
         'search_query': search_query,
     }
-    return render(request, 'cinema/search.html', context)
+    return render(request, 'cinemai/search.html', context)
 
 
 @login_required
@@ -185,7 +185,7 @@ def watchlist_view(request):
     context = {
         'watchlist_items': watchlist_items,
     }
-    return render(request, 'cinema/watchlist.html', context)
+    return render(request, 'cinemai/watchlist.html', context)
 
 
 @login_required
@@ -235,7 +235,7 @@ def update_watchlist_item(request, watchlist_id):
         'form': form,
         'watchlist_item': watchlist_item,
     }
-    return render(request, 'cinema/update_watchlist.html', context)
+    return render(request, 'cinemai/update_watchlist.html', context)
 
 
 @login_required
@@ -247,7 +247,7 @@ def subscription_view(request):
         'standard_price': 1499,
         'pro_price': 1999,
     }
-    return render(request, 'cinema/subscription.html', context)
+    return render(request, 'cinemaisubscription.html', context)
 
 
 @login_required
@@ -299,7 +299,7 @@ def create_checkout_session(request):
 def subscription_success(request):
     """Subscription success page"""
     messages.success(request, 'Subscription activated successfully!')
-    return render(request, 'cinema/subscription_success.html')
+    return render(request, 'cinemai/subscription_success.html')
 
 
 @csrf_exempt
@@ -341,12 +341,12 @@ def stripe_webhook(request):
 
 class CustomPasswordResetView(PasswordResetView):
     """Custom password reset view"""
-    template_name = 'cinema/password_reset.html'
-    email_template_name = 'cinema/password_reset_email.html'
+    template_name = 'cinemai/password_reset.html'
+    email_template_name = 'cinemai/password_reset_email.html'
     success_url = reverse_lazy('password_reset_done')
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     """Custom password reset confirm view"""
-    template_name = 'cinema/password_reset_confirm.html'
+    template_name = 'cinemai/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
