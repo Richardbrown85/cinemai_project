@@ -54,16 +54,29 @@ class Movie(models.Model):
     director = models.CharField(max_length=255, blank=True)
     plot = models.TextField(blank=True)
     poster_url = models.URLField(max_length=500, blank=True)
-    imdb_id = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    backdrop_url = models.URLField(max_length=500, blank=True, null=True)
+    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)
+    imdb_id = models.CharField(max_length=20, null=True, blank=True)
     rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     runtime = models.IntegerField(null=True, blank=True)  # in minutes
+    release_date = models.DateField(null=True, blank=True)
+    popularity = models.FloatField(null=True, blank=True)
+    vote_count = models.IntegerField(null=True, blank=True)
+    trailer_url = models.URLField(max_length=500, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.title} ({self.year})"
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-popularity', '-created_at']
+        
+    @property
+    def genre_list(self):
+        """Return genres as a list"""
+        if self.genre:
+            return [g.strip() for g in self.genre.split(',')]
+        return []
 
 
 class Watchlist(models.Model):

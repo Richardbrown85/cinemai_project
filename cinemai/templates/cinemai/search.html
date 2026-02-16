@@ -1,48 +1,111 @@
 {% extends 'cinemai/base.html' %}
 
-{% block title %}Delete Account - CinemAI{% endblock %}
+{% block title %}Search Movies - CinemAI{% endblock %}
 
 {% block content %}
 <div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card p-4 border-danger">
-                <h3 class="text-danger mb-4">
-                    <i class="bi bi-exclamation-triangle"></i> Delete Account
-                </h3>
-                
-                <div class="alert alert-danger">
-                    <strong>Warning!</strong> This action cannot be undone.
-                </div>
-                
-                <p class="mb-4">
-                    Deleting your account will permanently remove:
-                </p>
-                
-                <ul class="mb-4">
-                    <li>Your profile information</li>
-                    <li>Your watchlist and all saved movies</li>
-                    <li>Your search history</li>
-                    <li>Your subscription (if active)</li>
-                </ul>
-                
-                <p class="mb-4">
-                    Are you sure you want to proceed?
-                </p>
-                
+    <h2 class="text-center mb-4">AI-Powered Movie Search</h2>
+    
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card p-4">
                 <form method="post">
                     {% csrf_token %}
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger flex-fill">
-                            <i class="bi bi-trash"></i> Yes, Delete My Account
-                        </button>
-                        <a href="{% url 'account' %}" class="btn btn-secondary flex-fill">
-                            Cancel
-                        </a>
+                    <div class="mb-3">
+                        <label for="search_query" class="form-label">
+                            <i class="bi bi-search"></i> What kind of movie are you in the mood for?
+                        </label>
+                        <input 
+                            type="text" 
+                            class="form-control form-control-lg" 
+                            id="search_query" 
+                            name="search_query" 
+                            placeholder="e.g., 'Action movies with strong female leads' or 'Feel-good comedies'"
+                            value="{{ search_query }}"
+                            required
+                        >
                     </div>
+                    
+                    <div class="mb-3">
+                        <label for="genre" class="form-label">
+                            <i class="bi bi-funnel"></i> Genre (Optional)
+                        </label>
+                        <select class="form-control" id="genre" name="genre">
+                            <option value="">All Genres</option>
+                            <option value="Action">Action</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Animation">Animation</option>
+                            <option value="Comedy">Comedy</option>
+                            <option value="Crime">Crime</option>
+                            <option value="Documentary">Documentary</option>
+                            <option value="Drama">Drama</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Horror">Horror</option>
+                            <option value="Mystery">Mystery</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Thriller">Thriller</option>
+                            <option value="Western">Western</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-stars"></i> Get AI Recommendations
+                    </button>
                 </form>
             </div>
         </div>
     </div>
+    
+    {% if movies %}
+        <h3 class="mb-4">Search Results ({{ movies|length }} movies found)</h3>
+        <div class="row g-4">
+            {% for movie in movies %}
+                <div class="col-md-4 col-lg-3">
+                    <div class="card movie-card h-100">
+                        {% if movie.poster_url %}
+                            <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }}" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
+                        {% else %}
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
+                                <i class="bi bi-film" style="font-size: 4rem;"></i>
+                            </div>
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ movie.title }}</h5>
+                            {% if movie.year %}
+                                <p class="card-text text-muted small mb-2">{{ movie.year }}</p>
+                            {% endif %}
+                            {% if movie.rating %}
+                                <p class="mb-2">
+                                    <i class="bi bi-star-fill text-warning"></i> {{ movie.rating|floatformat:1 }}/10
+                                    {% if movie.vote_count %}
+                                        <small class="text-muted">({{ movie.vote_count }} votes)</small>
+                                    {% endif %}
+                                </p>
+                            {% endif %}
+                            {% if movie.plot %}
+                                <p class="card-text small mt-2">{{ movie.plot|truncatewords:20 }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'add_to_watchlist' movie.id %}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+                                </a>
+                            {% else %}
+                                <a href="{% url 'signup' %}?next={% url 'add_to_watchlist' movie.id %}" class="btn btn-outline-primary btn-sm w-100">
+                                    <i class="bi bi-bookmark-plus"></i> Sign up to save
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% elif search_query %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> No movies found for "{{ search_query }}". Try a different search.
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

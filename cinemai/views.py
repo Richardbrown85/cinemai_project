@@ -121,9 +121,14 @@ def search_movies(request):
     movies = []
     search_query = ''
     
+    print(f"DEBUG: Request method: {request.method}")  # DEBUG
+    
     if request.method == 'POST':
         search_query = request.POST.get('search_query', '')
         genre = request.POST.get('genre', '')
+        
+        print(f"DEBUG: Search query: {search_query}")  # DEBUG
+        print(f"DEBUG: Genre: {genre}")  # DEBUG
         
         # Save search history only for authenticated users
         if request.user.is_authenticated:
@@ -133,42 +138,49 @@ def search_movies(request):
                 genre=genre
             )
         
-        # Use OpenAI to get movie recommendations
-        if client and search_query:
+        # Use TMDB to search for movies
+        if search_query:
             try:
-                prompt = f"Recommend 10 movies based on: {search_query}"
-                if genre:
-                    prompt += f" in the {genre} genre"
-                prompt += ". Return only movie titles, one per line."
+                from .tmdb_service import TMDBService
+                tmdb = TMDBService()
                 
-                response = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=[
-                        {"role": "system", "content": "You are a movie recommendation assistant."},
-                        {"role": "user", "content": prompt}
-                    ]
-                )
+                print("DEBUG: TMDB service initialized")  # DEBUG
                 
-                movie_titles = response.choices[0].message.content.strip().split('\n')
+                # Search TMDB
+                results = tmdb.search_movies(search_query)
                 
-                # Fetch movie details from OMDB or store as basic entries
-                for title in movie_titles:
-                    title = title.strip('0123456789. ')
-                    if title:
-                        # Try to get or create movie
-                        movie, created = Movie.objects.get_or_create(
-                            title=title,
-                            defaults={'genre': genre}
-                        )
-                        movies.append(movie)
-                        
+                print(f"DEBUG: TMDB results count: {len(results.get('results', []))}")  # DEBUG
+                
+                # Process and save movies
+                for movie_data in results.get('results', [])[:10]:  # Limit to 10 results
+                    print(f"DEBUG: Processing movie: {movie_data.get('title')}")  # DEBUG
+                    
+                    # Get or create movie
+                    movie, created = Movie.objects.get_or_create(
+                        tmdb_id=movie_data.get('id'),
+                        defaults={
+                            'title': movie_data.get('title', ''),
+                            'year': int(movie_data.get('release_date', '0000')[:4]) if movie_data.get('release_date') else None,
+                            'plot': movie_data.get('overview', ''),
+                            'poster_url': tmdb.get_poster_url(movie_data.get('poster_path')),
+                            'backdrop_url': tmdb.get_backdrop_url(movie_data.get('backdrop_path')),
+                            'rating': movie_data.get('vote_average'),
+                            'popularity': movie_data.get('popularity'),
+                            'vote_count': movie_data.get('vote_count'),
+                            'genre': ', '.join([str(g) for g in movie_data.get('genre_ids', [])])
+                        }
+                    )
+                    movies.append(movie)
+                
+                print(f"DEBUG: Total movies to display: {len(movies)}")  # DEBUG
+                    
             except Exception as e:
-                messages.error(request, f'Error getting recommendations: {str(e)}')
-        else:
-            # Fallback: search existing movies
-            movies = Movie.objects.filter(title__icontains=search_query)
-            if genre:
-                movies = movies.filter(genre__icontains=genre)
+                print(f"DEBUG: Exception occurred: {str(e)}")  # DEBUG
+                import traceback
+                traceback.print_exc()  # DEBUG
+                messages.error(request, f'Error searching movies: {str(e)}')
+    
+    print(f"DEBUG: Final movies count: {len(movies)}")  # DEBUG
     
     context = {
         'movies': movies,

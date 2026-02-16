@@ -118,6 +118,11 @@ STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
 # OpenAI Configuration
 OPENAI_API_KEY = config('OPENAI_API_KEY', default='')
 
+# TMDB Configuration (The Movie Database)
+TMDB_API_KEY = config('TMDB_API_KEY', default='')
+TMDB_BASE_URL = 'https://api.themoviedb.org/3'
+TMDB_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p'
+
 # Email Configuration (for password reset)
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Change for production
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
