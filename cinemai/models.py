@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 class SubscriptionTier(models.TextChoices):
-    BASIC = 'BASIC', 'Basic - $9.99/month'
+    BASIC = 'BASIC', 'Basic - Free'
     STANDARD = 'STANDARD', 'Standard - $14.99/month'
     PRO = 'PRO', 'Pro - $19.99/month'
 
@@ -31,7 +31,7 @@ class UserProfile(models.Model):
     @property
     def tier_price(self):
         prices = {
-            'BASIC': 9.99,
+            'BASIC': 0.00,
             'STANDARD': 14.99,
             'PRO': 19.99
         }

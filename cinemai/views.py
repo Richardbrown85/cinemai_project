@@ -116,9 +116,8 @@ def delete_account(request):
     return render(request, 'cinemai/delete_account.html')
 
 
-@login_required
 def search_movies(request):
-    """AI-powered movie search view"""
+    """AI-powered movie search view - accessible to all users"""
     movies = []
     search_query = ''
     
@@ -126,12 +125,13 @@ def search_movies(request):
         search_query = request.POST.get('search_query', '')
         genre = request.POST.get('genre', '')
         
-        # Save search history
-        SearchHistory.objects.create(
-            user=request.user,
-            query=search_query,
-            genre=genre
-        )
+        # Save search history only for authenticated users
+        if request.user.is_authenticated:
+            SearchHistory.objects.create(
+                user=request.user,
+                query=search_query,
+                genre=genre
+            )
         
         # Use OpenAI to get movie recommendations
         if client and search_query:
@@ -247,7 +247,7 @@ def subscription_view(request):
         'standard_price': 1499,
         'pro_price': 1999,
     }
-    return render(request, 'cinemaisubscription.html', context)
+    return render(request, 'cinemai/subscription.html', context)
 
 
 @login_required

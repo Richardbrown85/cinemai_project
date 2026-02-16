@@ -1,107 +1,106 @@
 {% extends 'cinemai/base.html' %}
 
 {% block content %}
-<div class="hero-section">
+<div class="hero-section-simple">
     <div class="container">
-        <h1 class="display-3 mb-4">Welcome to CinemAI</h1>
-        <p class="lead mb-4">Discover your next favorite movie with AI-powered recommendations</p>
-        {% if not user.is_authenticated %}
-            <a href="{% url 'signup' %}" class="btn btn-primary btn-lg me-3">Get Started</a>
-            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Sign In</a>
-        {% else %}
-            <a href="{% url 'search' %}" class="btn btn-primary btn-lg">Start Searching</a>
-        {% endif %}
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <!-- Logo/Brand -->
+                <div class="text-center mb-4">
+                    <h1 class="brand-title">
+                        <i class="bi bi-film"></i> CinemAI
+                    </h1>
+                    <p class="brand-subtitle">Discover your next favorite movie with AI</p>
+                </div>
+
+                <!-- Search Form -->
+                <div class="search-container">
+                    <form method="post" action="{% url 'search' %}">
+                        {% csrf_token %}
+                        <div class="search-input-wrapper">
+                            <i class="bi bi-search search-icon"></i>
+                            <input 
+                                type="text" 
+                                class="form-control search-input" 
+                                name="search_query"
+                                placeholder="What kind of movie are you in the mood for? (e.g., 'action movies with strong female leads')"
+                                required
+                                autofocus
+                            >
+                            <button type="submit" class="btn btn-primary search-btn">
+                                <i class="bi bi-stars"></i> Search
+                            </button>
+                        </div>
+                        
+                        <!-- Quick Genre Filters -->
+                        <div class="genre-chips mt-3">
+                            <span class="chip-label">Try:</span>
+                            <button type="submit" name="search_query" value="action thriller movies" class="genre-chip">Action</button>
+                            <button type="submit" name="search_query" value="romantic comedy movies" class="genre-chip">Comedy</button>
+                            <button type="submit" name="search_query" value="horror movies" class="genre-chip">Horror</button>
+                            <button type="submit" name="search_query" value="sci-fi movies" class="genre-chip">Sci-Fi</button>
+                            <button type="submit" name="search_query" value="drama movies" class="genre-chip">Drama</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Features -->
+                <div class="features-simple mt-5">
+                    <div class="row g-3 text-center">
+                        <div class="col-md-4">
+                            <i class="bi bi-robot feature-icon"></i>
+                            <p class="feature-text">AI-Powered Search</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-bookmark-star feature-icon"></i>
+                            <p class="feature-text">Personal Watchlist</p>
+                        </div>
+                        <div class="col-md-4">
+                            <i class="bi bi-lightning feature-icon"></i>
+                            <p class="feature-text">Free to Use</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="container my-5">
-    <h2 class="text-center mb-5">Why Choose CinemAI?</h2>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card p-4 text-center h-100">
-                <div class="mb-3">
-                    <i class="bi bi-robot" style="font-size: 3rem; color: var(--primary-color);"></i>
-                </div>
-                <h4>AI-Powered</h4>
-                <p>Get personalized movie recommendations powered by advanced AI technology</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-4 text-center h-100">
-                <div class="mb-3">
-                    <i class="bi bi-bookmark-star" style="font-size: 3rem; color: var(--primary-color);"></i>
-                </div>
-                <h4>Personal Watchlist</h4>
-                <p>Keep track of movies you want to watch and those you've already seen</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-4 text-center h-100">
-                <div class="mb-3">
-                    <i class="bi bi-layers" style="font-size: 3rem; color: var(--primary-color);"></i>
-                </div>
-                <h4>Flexible Plans</h4>
-                <p>Choose from Basic, Standard, or Pro plans to match your needs</p>
+<!-- Optional: Popular Searches Section -->
+{% if user.is_authenticated %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h5 class="text-muted mb-3">Recent Searches</h5>
+            <div class="recent-searches">
+                {% if user.search_history.all|slice:":5" %}
+                    {% for search in user.search_history.all|slice:":5" %}
+                        <a href="{% url 'search' %}?q={{ search.query }}" class="recent-search-item">
+                            <i class="bi bi-clock-history"></i> {{ search.query }}
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted small">Your search history will appear here</p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 
-<div class="container my-5">
-    <h2 class="text-center mb-5">Subscription Plans</h2>
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card subscription-card p-4 text-center h-100">
-                <h3 class="mb-3">Basic</h3>
-                <h2 class="mb-4">$9.99<small class="text-muted">/month</small></h2>
-                <ul class="list-unstyled mb-4">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> AI Movie Recommendations</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Personal Watchlist</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Search History</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> 10 Searches/day</li>
-                </ul>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'subscription' %}" class="btn btn-outline-primary">Choose Basic</a>
-                {% else %}
-                    <a href="{% url 'signup' %}" class="btn btn-outline-primary">Sign Up</a>
-                {% endif %}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card subscription-card p-4 text-center h-100 border border-primary">
-                <span class="badge bg-primary mb-2">POPULAR</span>
-                <h3 class="mb-3">Standard</h3>
-                <h2 class="mb-4">$14.99<small class="text-muted">/month</small></h2>
-                <ul class="list-unstyled mb-4">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Basic Features</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Unlimited Searches</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Advanced Filters</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Priority Support</li>
-                </ul>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'subscription' %}" class="btn btn-primary">Choose Standard</a>
-                {% else %}
-                    <a href="{% url 'signup' %}" class="btn btn-primary">Sign Up</a>
-                {% endif %}
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card subscription-card p-4 text-center h-100">
-                <h3 class="mb-3">Pro</h3>
-                <h2 class="mb-4">$19.99<small class="text-muted">/month</small></h2>
-                <ul class="list-unstyled mb-4">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Standard Features</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Custom AI Models</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Detailed Analytics</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Early Access</li>
-                </ul>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'subscription' %}" class="btn btn-outline-primary">Choose Pro</a>
-                {% else %}
-                    <a href="{% url 'signup' %}" class="btn btn-outline-primary">Sign Up</a>
-                {% endif %}
+<!-- Simple CTA for account -->
+{% if not user.is_authenticated %}
+<div class="container mt-5 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 text-center">
+            <div class="cta-box">
+                <h5>Want to save your watchlist?</h5>
+                <p class="text-muted mb-3">Create a free account to save movies and track what you've watched</p>
+                <a href="{% url 'signup' %}" class="btn btn-outline-primary me-2">Sign Up Free</a>
+                <a href="{% url 'login' %}" class="btn btn-link">Already have an account?</a>
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 {% endblock %}
