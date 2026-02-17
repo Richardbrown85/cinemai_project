@@ -12,71 +12,128 @@
 </div>
 
 <div class="container my-5">
-    <h2 class="text-center mb-5">Choose Your Plan</h2>
+    <div class="text-center mb-5">
+        <h2 class="mb-2">Choose Your Plan</h2>
+        <p class="text-muted">Start free, upgrade anytime</p>
+    </div>
     
     <div class="row g-4 mb-5">
+
+        <!-- Basic - FREE -->
         <div class="col-md-4">
             <div class="card subscription-card p-4 text-center h-100">
                 <h3 class="mb-3">Basic</h3>
-                <h2 class="mb-4">$9.99<small class="text-muted">/month</small></h2>
+                <h2 class="mb-1">Free</h2>
+                <p class="text-muted mb-4">Forever</p>
                 <ul class="list-unstyled mb-4 text-start">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> AI Movie Recommendations</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Personal Watchlist</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Search History</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> 10 Searches per day</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> AI Movie Search</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Personal Watchlist</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Search History</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> 10 Searches per day</li>
+                    <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> Advanced Filters</li>
+                    <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> Priority Support</li>
                 </ul>
-                <button class="btn btn-primary subscribe-btn" data-tier="BASIC">
-                    Subscribe to Basic
-                </button>
+                {% if user.profile.subscription_tier == 'BASIC' %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="bi bi-check-circle"></i> Current Plan
+                    </button>
+                {% else %}
+                    <button class="btn btn-outline-secondary w-100" disabled>
+                        Free Plan
+                    </button>
+                {% endif %}
             </div>
         </div>
         
+        <!-- Standard - £9.99 -->
         <div class="col-md-4">
-            <div class="card subscription-card p-4 text-center h-100 border border-primary border-3">
-                <span class="badge bg-primary mb-2">MOST POPULAR</span>
+            <div class="card subscription-card p-4 text-center h-100" style="border: 2px solid var(--accent);">
+                <span class="badge mb-2" style="background: var(--accent); color: #0F1F1B;">MOST POPULAR</span>
                 <h3 class="mb-3">Standard</h3>
-                <h2 class="mb-4">$14.99<small class="text-muted">/month</small></h2>
+                <h2 class="mb-1">£9.99</h2>
+                <p class="text-muted mb-4">per month</p>
                 <ul class="list-unstyled mb-4 text-start">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Basic Features</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Unlimited Searches</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Advanced Filters</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Priority Support</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Everything in Basic</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Unlimited Searches</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Advanced Filters</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Priority Support</li>
+                    <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> Custom AI Models</li>
+                    <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> Early Access Features</li>
                 </ul>
-                <button class="btn btn-primary subscribe-btn" data-tier="STANDARD">
-                    Subscribe to Standard
-                </button>
+                {% if user.profile.subscription_tier == 'STANDARD' %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="bi bi-check-circle"></i> Current Plan
+                    </button>
+                {% else %}
+                    <button class="btn btn-primary w-100 subscribe-btn" data-tier="STANDARD">
+                        Upgrade to Standard
+                    </button>
+                {% endif %}
             </div>
         </div>
         
+        <!-- Pro - £14.99 -->
         <div class="col-md-4">
             <div class="card subscription-card p-4 text-center h-100">
                 <h3 class="mb-3">Pro</h3>
-                <h2 class="mb-4">$19.99<small class="text-muted">/month</small></h2>
+                <h2 class="mb-1">£14.99</h2>
+                <p class="text-muted mb-4">per month</p>
                 <ul class="list-unstyled mb-4 text-start">
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> All Standard Features</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Custom AI Models</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Detailed Analytics</li>
-                    <li class="mb-2"><i class="bi bi-check-circle text-success"></i> Early Access to New Features</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Everything in Standard</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Custom AI Models</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Detailed Analytics</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Early Access Features</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Dedicated Support</li>
+                    <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> API Access</li>
                 </ul>
-                <button class="btn btn-primary subscribe-btn" data-tier="PRO">
-                    Subscribe to Pro
-                </button>
+                {% if user.profile.subscription_tier == 'PRO' %}
+                    <button class="btn btn-secondary w-100" disabled>
+                        <i class="bi bi-check-circle"></i> Current Plan
+                    </button>
+                {% else %}
+                    <button class="btn btn-primary w-100 subscribe-btn" data-tier="PRO">
+                        Upgrade to Pro
+                    </button>
+                {% endif %}
             </div>
         </div>
     </div>
     
+    <!-- Current Subscription Status -->
     <div class="card p-4">
-        <h4 class="mb-3">Current Subscription</h4>
-        <p><strong>Plan:</strong> {{ user.profile.get_subscription_tier_display }}</p>
-        <p><strong>Status:</strong> 
-            {% if user.profile.subscription_active %}
-                <span class="badge bg-success">Active</span>
-            {% else %}
-                <span class="badge bg-secondary">Inactive</span>
-            {% endif %}
-        </p>
+        <h5 class="mb-3">
+            <i class="bi bi-star" style="color: var(--accent);"></i> Your Current Subscription
+        </h5>
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <p class="mb-1">
+                    <strong>Plan:</strong>
+                    <span class="badge ms-2" style="background: var(--accent); color: #0F1F1B;">
+                        {{ user.profile.get_subscription_tier_display }}
+                    </span>
+                </p>
+                <p class="text-muted small mb-0">
+                    {% if user.profile.subscription_tier == 'BASIC' %}
+                        You're on the free plan. Upgrade to unlock unlimited searches!
+                    {% elif user.profile.subscription_tier == 'STANDARD' %}
+                        You have unlimited searches and advanced filters.
+                    {% else %}
+                        You have full access to all CinemAI features!
+                    {% endif %}
+                </p>
+            </div>
+            <span>
+                {% if user.profile.subscription_active %}
+                    <span class="badge" style="background: var(--success);">Active</span>
+                {% else %}
+                    <span class="badge bg-secondary">Free</span>
+                {% endif %}
+            </span>
+        </div>
         {% if user.profile.subscription_end_date %}
-            <p><strong>Renewal Date:</strong> {{ user.profile.subscription_end_date|date:"M d, Y" }}</p>
+            <p class="text-muted small mt-2 mb-0">
+                <i class="bi bi-calendar"></i> Renewal Date: {{ user.profile.subscription_end_date|date:"d M Y" }}
+            </p>
         {% endif %}
     </div>
 </div>
