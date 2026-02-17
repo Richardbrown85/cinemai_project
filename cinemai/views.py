@@ -121,14 +121,13 @@ def search_movies(request):
     movies = []
     search_query = ''
     
-    print(f"DEBUG: Request method: {request.method}")  # DEBUG
+    print(f"DEBUG: Request method: {request.method}")
     
     if request.method == 'POST':
         search_query = request.POST.get('search_query', '')
         genre = request.POST.get('genre', '')
         
-        print(f"DEBUG: Search query: {search_query}")  # DEBUG
-        print(f"DEBUG: Genre: {genre}")  # DEBUG
+        print(f"DEBUG: Search query: {search_query}")
         
         # Save search history only for authenticated users
         if request.user.is_authenticated:
@@ -138,49 +137,119 @@ def search_movies(request):
                 genre=genre
             )
         
-        # Use TMDB to search for movies
         if search_query:
             try:
                 from .tmdb_service import TMDBService
                 tmdb = TMDBService()
                 
-                print("DEBUG: TMDB service initialized")  # DEBUG
-                
-                # Search TMDB
-                results = tmdb.search_movies(search_query)
-                
-                print(f"DEBUG: TMDB results count: {len(results.get('results', []))}")  # DEBUG
-                
-                # Process and save movies
-                for movie_data in results.get('results', [])[:10]:  # Limit to 10 results
-                    print(f"DEBUG: Processing movie: {movie_data.get('title')}")  # DEBUG
+                # Check if OpenAI is available for smart search
+                if client and settings.OPENAI_API_KEY:
+                    print("DEBUG: Using OpenAI + TMDB for intelligent search")
                     
-                    # Get or create movie
-                    movie, created = Movie.objects.get_or_create(
-                        tmdb_id=movie_data.get('id'),
-                        defaults={
-                            'title': movie_data.get('title', ''),
-                            'year': int(movie_data.get('release_date', '0000')[:4]) if movie_data.get('release_date') else None,
-                            'plot': movie_data.get('overview', ''),
-                            'poster_url': tmdb.get_poster_url(movie_data.get('poster_path')),
-                            'backdrop_url': tmdb.get_backdrop_url(movie_data.get('backdrop_path')),
-                            'rating': movie_data.get('vote_average'),
-                            'popularity': movie_data.get('popularity'),
-                            'vote_count': movie_data.get('vote_count'),
-                            'genre': ', '.join([str(g) for g in movie_data.get('genre_ids', [])])
-                        }
-                    )
-                    movies.append(movie)
+                    # Use OpenAI to understand the query and suggest movies
+                    try:
+                        prompt = f"""Based on this search query: "{search_query}"
+                        
+Suggest 8-10 specific movie titles that match this request. Consider:
+- Genre preferences
+- Themes and plot elements
+- Mood and tone
+- Similar movies if mentioned
+
+Return ONLY movie titles, one per line, no numbering or explanation."""
+
+                        response = client.chat.completions.create(
+                            model="gpt-3.5-turbo",
+                            messages=[
+                                {"role": "system", "content": "You are a movie recommendation expert. Provide accurate, specific movie titles."},
+                                {"role": "user", "content": prompt}
+                            ],
+                            max_tokens=200,
+                            temperature=0.7
+                        )
+                        
+                        movie_titles = response.choices[0].message.content.strip().split('\n')
+                        print(f"DEBUG: OpenAI suggested {len(movie_titles)} movies")
+                        
+                        # Search TMDB for each suggested movie
+                        for title in movie_titles[:10]:
+                            title = title.strip('0123456789. -•')
+                            if title:
+                                print(f"DEBUG: Searching TMDB for: {title}")
+                                results = tmdb.search_movies(title)
+                                
+                                # Get the best match (first result)
+                                if results.get('results'):
+                                    movie_data = results['results'][0]
+                                    
+                                    # Get or create movie
+                                    movie, created = Movie.objects.get_or_create(
+                                        tmdb_id=movie_data.get('id'),
+                                        defaults={
+                                            'title': movie_data.get('title', ''),
+                                            'year': int(movie_data.get('release_date', '0000')[:4]) if movie_data.get('release_date') else None,
+                                            'plot': movie_data.get('overview', ''),
+                                            'poster_url': tmdb.get_poster_url(movie_data.get('poster_path')),
+                                            'backdrop_url': tmdb.get_backdrop_url(movie_data.get('backdrop_path')),
+                                            'rating': movie_data.get('vote_average'),
+                                            'popularity': movie_data.get('popularity'),
+                                            'vote_count': movie_data.get('vote_count'),
+                                            'genre': ', '.join([str(g) for g in movie_data.get('genre_ids', [])])
+                                        }
+                                    )
+                                    movies.append(movie)
+                    
+                    except Exception as openai_error:
+                        print(f"DEBUG: OpenAI error, falling back to TMDB: {openai_error}")
+                        # Fall back to direct TMDB search
+                        results = tmdb.search_movies(search_query)
+                        
+                        for movie_data in results.get('results', [])[:10]:
+                            movie, created = Movie.objects.get_or_create(
+                                tmdb_id=movie_data.get('id'),
+                                defaults={
+                                    'title': movie_data.get('title', ''),
+                                    'year': int(movie_data.get('release_date', '0000')[:4]) if movie_data.get('release_date') else None,
+                                    'plot': movie_data.get('overview', ''),
+                                    'poster_url': tmdb.get_poster_url(movie_data.get('poster_path')),
+                                    'backdrop_url': tmdb.get_backdrop_url(movie_data.get('backdrop_path')),
+                                    'rating': movie_data.get('vote_average'),
+                                    'popularity': movie_data.get('popularity'),
+                                    'vote_count': movie_data.get('vote_count'),
+                                    'genre': ', '.join([str(g) for g in movie_data.get('genre_ids', [])])
+                                }
+                            )
+                            movies.append(movie)
                 
-                print(f"DEBUG: Total movies to display: {len(movies)}")  # DEBUG
+                else:
+                    print("DEBUG: Using TMDB-only search (no OpenAI)")
+                    # Direct TMDB search if OpenAI not available
+                    results = tmdb.search_movies(search_query)
+                    
+                    for movie_data in results.get('results', [])[:10]:
+                        movie, created = Movie.objects.get_or_create(
+                            tmdb_id=movie_data.get('id'),
+                            defaults={
+                                'title': movie_data.get('title', ''),
+                                'year': int(movie_data.get('release_date', '0000')[:4]) if movie_data.get('release_date') else None,
+                                'plot': movie_data.get('overview', ''),
+                                'poster_url': tmdb.get_poster_url(movie_data.get('poster_path')),
+                                'backdrop_url': tmdb.get_backdrop_url(movie_data.get('backdrop_path')),
+                                'rating': movie_data.get('vote_average'),
+                                'popularity': movie_data.get('popularity'),
+                                'vote_count': movie_data.get('vote_count'),
+                                'genre': ', '.join([str(g) for g in movie_data.get('genre_ids', [])])
+                            }
+                        )
+                        movies.append(movie)
+                
+                print(f"DEBUG: Total movies to display: {len(movies)}")
                     
             except Exception as e:
-                print(f"DEBUG: Exception occurred: {str(e)}")  # DEBUG
+                print(f"DEBUG: Exception occurred: {str(e)}")
                 import traceback
-                traceback.print_exc()  # DEBUG
+                traceback.print_exc()
                 messages.error(request, f'Error searching movies: {str(e)}')
-    
-    print(f"DEBUG: Final movies count: {len(movies)}")  # DEBUG
     
     context = {
         'movies': movies,
@@ -255,9 +324,6 @@ def subscription_view(request):
     """Subscription management and Stripe checkout"""
     context = {
         'stripe_public_key': settings.STRIPE_PUBLIC_KEY,
-        'basic_price': 999,  # in cents
-        'standard_price': 1499,
-        'pro_price': 1999,
     }
     return render(request, 'cinemai/subscription.html', context)
 
@@ -269,26 +335,25 @@ def create_checkout_session(request):
         data = json.loads(request.body)
         tier = data.get('tier')
         
+        # Stripe Price IDs (GBP)
         price_map = {
-            'BASIC': 999,
-            'STANDARD': 1499,
-            'PRO': 1999,
+            'STANDARD': 'price_1T1qc7Iux0tpDCVobkSiqu2K',  # £9.99/month
+            'PRO': 'price_1T1qcpIux0tpDCVoUgUoP5td',        # £14.99/month
         }
+        
+        # Basic is FREE - no Stripe needed
+        if tier == 'BASIC':
+            return JsonResponse({'error': 'Basic plan is free, no payment needed'}, status=400)
+        
+        price_id = price_map.get(tier)
+        if not price_id:
+            return JsonResponse({'error': 'Invalid plan selected'}, status=400)
         
         try:
             checkout_session = stripe.checkout.Session.create(
                 payment_method_types=['card'],
                 line_items=[{
-                    'price_data': {
-                        'currency': 'usd',
-                        'product_data': {
-                            'name': f'CinemAI {tier.capitalize()} Subscription',
-                        },
-                        'unit_amount': price_map.get(tier, 999),
-                        'recurring': {
-                            'interval': 'month',
-                        },
-                    },
+                    'price': price_id,
                     'quantity': 1,
                 }],
                 mode='subscription',
@@ -297,6 +362,7 @@ def create_checkout_session(request):
                 client_reference_id=str(request.user.id),
                 metadata={
                     'tier': tier,
+                    'user_id': str(request.user.id),
                 }
             )
             
