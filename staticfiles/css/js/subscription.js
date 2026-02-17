@@ -5,8 +5,10 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Get Stripe public key from data attribute
-    const stripePublicKey = document.getElementById('stripe-data').dataset.stripeKey;
-    const stripe = Stripe(stripePublicKey);
+    const stripeData = document.getElementById('stripe-data');
+    
+    // Only initialize Stripe if we have a key (for paid plans)
+    const stripe = stripeData && stripeData.dataset.stripeKey ? Stripe(stripeData.dataset.stripeKey) : null;
     
     // Get all subscription buttons
     const subscribeBtns = document.querySelectorAll('.subscribe-btn');
@@ -14,6 +16,20 @@ document.addEventListener('DOMContentLoaded', function() {
     subscribeBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const tier = e.target.dataset.tier;
+            
+            // Basic tier is FREE - no Stripe needed
+            if (tier === 'BASIC') {
+                alert('Basic plan is completely FREE! Just sign up to get started.');
+                window.location.href = '/signup/';
+                return;
+            }
+            
+            // For paid tiers (Standard, Pro)
+            if (!stripe) {
+                alert('Payment system not configured. Please contact support.');
+                return;
+            }
+            
             const originalText = btn.innerHTML;
             
             // Disable button and show loading
@@ -25,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const csrfToken = getCSRFToken();
                 
                 // Get checkout URL from data attribute
-                const checkoutUrl = document.getElementById('stripe-data').dataset.checkoutUrl;
+                const checkoutUrl = stripeData.dataset.checkoutUrl;
                 
                 // Create checkout session
                 const response = await fetch(checkoutUrl, {
