@@ -18,9 +18,6 @@ from openai import OpenAI
 from .models import UserProfile, Movie, Watchlist, SearchHistory
 from .forms import SignUpForm, LoginForm, UserUpdateForm, ProfileUpdateForm, WatchlistForm
 
-# Configure Stripe
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
 # Configure OpenAI
 client = OpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
 
@@ -330,24 +327,19 @@ def subscription_view(request):
 
 @login_required
 def create_checkout_session(request):
-    """Create Stripe checkout session"""
     if request.method == 'POST':
+
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        
         data = json.loads(request.body)
         tier = data.get('tier')
         
-        # Stripe Price IDs (GBP)
         price_map = {
-            'STANDARD': 'price_1T1qc7Iux0tpDCVobkSiqu2K',  # £9.99/month
-            'PRO': 'price_1T1qcpIux0tpDCVoUgUoP5td',        # £14.99/month
+            'STANDARD': 'price_1T1qc7Iux0tpDCVobkSiqu2K',  # £9.99
+            'PRO': 'price_1T1qcpIux0tpDCVoUgUoP5td',        # £14.99
         }
         
-        # Basic is FREE - no Stripe needed
-        if tier == 'BASIC':
-            return JsonResponse({'error': 'Basic plan is free, no payment needed'}, status=400)
-        
         price_id = price_map.get(tier)
-        if not price_id:
-            return JsonResponse({'error': 'Invalid plan selected'}, status=400)
         
         try:
             checkout_session = stripe.checkout.Session.create(
@@ -365,12 +357,13 @@ def create_checkout_session(request):
                     'user_id': str(request.user.id),
                 }
             )
-            
             return JsonResponse({'sessionId': checkout_session.id})
+            
+        except stripe.error.StripeError as e:
+            return JsonResponse({'error': str(e)}, status=400)
+            
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
-    
-    return JsonResponse({'error': 'Invalid request'}, status=400)
 
 
 @login_required

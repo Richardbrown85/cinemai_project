@@ -3,9 +3,7 @@
 /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
-/* ========================================
-   CSS Variables (Custom Color Palette)
-   ======================================== */
+/* CSS Variables (Custom Color Palette) */
 :root {
     --bg-primary: #121417;
     --bg-surface: #1A1D22;
@@ -20,9 +18,7 @@
     --warning: #F59E0B;
 }
 
-/* ========================================
-   Global Styles
-   ======================================== */
+/* Global Styles */
 * {
     box-sizing: border-box;
 }
