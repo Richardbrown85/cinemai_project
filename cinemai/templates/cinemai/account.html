@@ -1,56 +1,152 @@
 {% extends 'cinemai/base.html' %}
 
-{% block title %}Login - CinemAI{% endblock %}
+{% block title %}My Account - CinemAI{% endblock %}
 
 {% block content %}
 <div class="container my-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card p-4">
-                <h2 class="text-center mb-4">Welcome Back</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {{ form.non_field_errors }}
-                        </div>
-                    {% endif %}
-                    
-                    <div class="mb-3">
-                        {{ form.username.label_tag }}
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.username.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form.password.label_tag }}
-                        {{ form.password }}
-                        {% if form.password.errors %}
-                            <div class="text-danger small mt-1">
-                                {{ form.password.errors }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="mb-3 text-end">
-                        <a href="{% url 'password_reset' %}" class="text-decoration-none small">
-                            Forgot password?
-                        </a>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
-                    
-                    <p class="text-center mb-0">
-                        Don't have an account? 
-                        <a href="{% url 'signup' %}" class="text-decoration-none">Sign up here</a>
-                    </p>
-                </form>
+        <div class="col-md-8">
+
+            <!-- Account Header -->
+            <div class="mb-4">
+                <h2 class="mb-1">My Account</h2>
+                <p class="text-muted">Manage your profile and subscription</p>
             </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Profile Info -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-4">
+                        <i class="bi bi-person-circle" style="color: var(--accent);"></i> Profile Information
+                    </h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">First Name</label>
+                                {{ user_form.first_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Last Name</label>
+                                {{ user_form.last_name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Username</label>
+                                {{ user_form.username }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                {{ user_form.email }}
+                            </div>
+                        </div>
+
+                        <hr style="border-color: var(--border-subtle);">
+
+                        <h5 class="mb-3">
+                            <i class="bi bi-sliders" style="color: var(--accent);"></i> Preferences
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Favourite Genre</label>
+                                {{ profile_form.favourite_genre }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Bio</label>
+                                {{ profile_form.bio }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Subscription Info -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-4">
+                        <i class="bi bi-star" style="color: var(--accent);"></i> Subscription
+                    </h5>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <p class="mb-1">
+                                <strong>Current Plan:</strong>
+                                <span class="badge bg-primary ms-2">
+                                    {{ request.user.profile.get_subscription_tier_display }}
+                                </span>
+                            </p>
+                            <p class="text-muted small mb-0">
+                                {% if request.user.profile.subscription_tier == 'BASIC' %}
+                                    Free forever - Upgrade for unlimited searches
+                                {% elif request.user.profile.subscription_tier == 'STANDARD' %}
+                                    Unlimited searches + Advanced filters
+                                {% else %}
+                                    Full access to all features
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% if request.user.profile.subscription_tier == 'BASIC' %}
+                            <a href="{% url 'subscription' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-arrow-up-circle"></i> Upgrade
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-4">
+                        <i class="bi bi-bar-chart" style="color: var(--accent);"></i> Your Stats
+                    </h5>
+                    <div class="row text-center g-3">
+                        <div class="col-4">
+                            <h3 style="color: var(--accent);">{{ request.user.watchlist_set.count }}</h3>
+                            <p class="text-muted small mb-0">Watchlist</p>
+                        </div>
+                        <div class="col-4">
+                            <h3 style="color: var(--accent);">{{ request.user.searchhistory_set.count }}</h3>
+                            <p class="text-muted small mb-0">Searches</p>
+                        </div>
+                        <div class="col-4">
+                            <h3 style="color: var(--accent);">
+                                {% if request.user.profile.subscription_active %}Active{% else %}Free{% endif %}
+                            </h3>
+                            <p class="text-muted small mb-0">Status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="card" style="border-color: var(--error);">
+                <div class="card-body">
+                    <h5 class="mb-3" style="color: var(--error);">
+                        <i class="bi bi-exclamation-triangle"></i> Danger Zone
+                    </h5>
+                    <p class="text-muted small mb-3">
+                        Permanently delete your account and all your data. This cannot be undone.
+                    </p>
+                    <a href="{% url 'delete_account' %}" class="btn btn-sm" style="border: 1px solid var(--error); color: var(--error);">
+                        <i class="bi bi-trash"></i> Delete Account
+                    </a>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
