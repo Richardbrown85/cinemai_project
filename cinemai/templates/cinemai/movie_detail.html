@@ -1,0 +1,250 @@
+{% extends 'cinemai/base.html' %}
+
+{% block title %}{{ movie.title }} - CinemAI{% endblock %}
+
+{% block content %}
+<!-- Backdrop Image -->
+{% if movie.backdrop_url %}
+<div style="position: relative; width: 100%; height: 400px; overflow: hidden; margin-bottom: 2rem;">
+    <img src="{{ movie.backdrop_url }}" 
+         alt="{{ movie.title }} backdrop" 
+         style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);">
+    <div style="position: absolute; bottom: 2rem; left: 2rem; color: white;">
+        <h1 class="display-4 mb-0">{{ movie.title }}</h1>
+        {% if movie.year %}
+            <p class="lead mb-0">({{ movie.year }})</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div class="container my-4">
+    <div class="row">
+        <!-- Left Column: Poster -->
+        <div class="col-md-4 mb-4">
+            {% if movie.poster_url %}
+                <img src="{{ movie.poster_url }}" 
+                     alt="{{ movie.title }} poster" 
+                     class="img-fluid rounded" 
+                     style="width: 100%;">
+            {% else %}
+                <div class="bg-secondary d-flex align-items-center justify-content-center rounded" 
+                     style="height: 450px;">
+                    <i class="bi bi-film" style="font-size: 4rem; color: var(--text-muted);"></i>
+                </div>
+            {% endif %}
+            
+            <!-- Add to Watchlist Button -->
+            <div class="mt-3">
+                {% if user.is_authenticated %}
+                    {% if in_watchlist %}
+                        <button class="btn btn-secondary w-100" disabled>
+                            <i class="bi bi-check-circle"></i> In Your Watchlist
+                        </button>
+                    {% else %}
+                        <a href="{% url 'add_to_watchlist' movie.id %}" class="btn btn-primary w-100">
+                            <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'signup' %}" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-bookmark-plus"></i> Sign Up to Save
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Details -->
+        <div class="col-md-8">
+            <!-- Rating & Genres -->
+            <div class="mb-4">
+                {% if movie.rating %}
+                    <h3 style="color: var(--accent);">
+                        <i class="bi bi-star-fill"></i> {{ movie.rating|floatformat:1 }}/10
+                        {% if movie.vote_count %}
+                            <small class="text-muted" style="font-size: 1rem;">({{ movie.vote_count|floatformat:0 }} votes)</small>
+                        {% endif %}
+                    </h3>
+                {% endif %}
+                
+                {% if genres %}
+                    <div class="mb-3">
+                        {% for genre in genres %}
+                            <span class="badge me-1" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); font-size: 0.9rem;">
+                                {{ genre }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Trailer -->
+            {% if trailer_url %}
+            <div class="mb-4">
+                <h5><i class="bi bi-play-circle" style="color: var(--accent);"></i> Trailer</h5>
+                <div class="ratio ratio-16x9">
+                    <iframe src="{{ trailer_url }}" 
+                            allowfullscreen 
+                            style="border-radius: 10px;"></iframe>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Streaming Availability -->
+            {% if movie.streaming_providers %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3">
+                        <i class="bi bi-tv" style="color: var(--accent);"></i> Where to Watch
+                    </h5>
+                    
+                    {% if movie.streaming_providers.flatrate %}
+                        <div class="mb-3">
+                            <p class="text-muted mb-2"><strong>Stream:</strong></p>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for provider in movie.streaming_providers.flatrate %}
+                                    <span class="badge" style="background: var(--accent); color: #0F1F1B; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        {{ provider.provider_name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if movie.streaming_providers.rent %}
+                        <div class="mb-3">
+                            <p class="text-muted mb-2"><strong>Rent:</strong></p>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for provider in movie.streaming_providers.rent %}
+                                    <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        {{ provider.provider_name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if movie.streaming_providers.buy %}
+                        <div>
+                            <p class="text-muted mb-2"><strong>Buy:</strong></p>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for provider in movie.streaming_providers.buy %}
+                                    <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        {{ provider.provider_name }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <a href="https://www.justwatch.com/uk/search?q={{ movie.title|urlencode }}" 
+                       target="_blank" 
+                       class="btn btn-sm btn-outline-primary mt-3">
+                        <i class="bi bi-box-arrow-up-right"></i> Find All Streaming Options
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Overview -->
+            {% if movie.plot %}
+            <div class="mb-4">
+                <h5><i class="bi bi-book" style="color: var(--accent);"></i> Overview</h5>
+                <p>{{ movie.plot }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Cast -->
+            {% if cast %}
+            <div class="mb-4">
+                <h5><i class="bi bi-people" style="color: var(--accent);"></i> Cast</h5>
+                <div class="row g-3">
+                    {% for actor in cast %}
+                        <div class="col-6 col-md-4">
+                            <div class="card h-100" style="background: var(--bg-surface); border: 1px solid var(--border-subtle);">
+                                <div class="card-body p-3">
+                                    <p class="mb-1" style="font-weight: 600;">{{ actor.name }}</p>
+                                    <p class="text-muted small mb-0">{{ actor.character }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Movie Details -->
+            {% if movie_details %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="mb-3"><i class="bi bi-info-circle" style="color: var(--accent);"></i> Details</h5>
+                    <div class="row">
+                        {% if movie_details.runtime %}
+                        <div class="col-md-6 mb-2">
+                            <strong>Runtime:</strong> {{ movie_details.runtime }} minutes
+                        </div>
+                        {% endif %}
+                        {% if movie_details.release_date %}
+                        <div class="col-md-6 mb-2">
+                            <strong>Release Date:</strong> {{ movie_details.release_date }}
+                        </div>
+                        {% endif %}
+                        {% if movie_details.budget %}
+                        <div class="col-md-6 mb-2">
+                            <strong>Budget:</strong> ${{ movie_details.budget|floatformat:0 }}
+                        </div>
+                        {% endif %}
+                        {% if movie_details.revenue %}
+                        <div class="col-md-6 mb-2">
+                            <strong>Revenue:</strong> ${{ movie_details.revenue|floatformat:0 }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Similar Movies -->
+    {% if similar_movies %}
+    <div class="mt-5">
+        <h4 class="mb-4"><i class="bi bi-film" style="color: var(--accent);"></i> Similar Movies</h4>
+        <div class="row g-4">
+            {% for similar in similar_movies %}
+                <div class="col-md-2 col-6">
+                    <a href="{% url 'movie_detail' similar.id %}" style="text-decoration: none; color: inherit;">
+                        <div class="card movie-card h-100">
+                            {% if similar.poster_url %}
+                                <img src="{{ similar.poster_url }}" 
+                                     class="card-img-top" 
+                                     alt="{{ similar.title }}"
+                                     style="height: 250px; object-fit: cover;">
+                            {% else %}
+                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
+                                     style="height: 250px;">
+                                    <i class="bi bi-film" style="font-size: 2rem;"></i>
+                                </div>
+                            {% endif %}
+                            <div class="card-body p-2">
+                                <p class="small mb-0" style="font-weight: 600;">{{ similar.title }}</p>
+                                {% if similar.year %}
+                                    <p class="text-muted small mb-0">{{ similar.year }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Back Button -->
+    <div class="mt-5">
+        <a href="{% url 'search' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Search
+        </a>
+    </div>
+</div>
+{% endblock %}

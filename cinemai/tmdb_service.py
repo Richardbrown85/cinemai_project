@@ -235,6 +235,32 @@ class TMDBService:
         else:
             # Fallback to search
             return self.search_movies(genre_name)
+    
+    def get_similar_movies(self, movie_id, page=1):
+        """
+        Get similar movies based on a movie ID
+        
+        Args:
+            movie_id (int): TMDB movie ID
+            page (int): Page number
+            
+        Returns:
+            dict: Similar movies
+        """
+        endpoint = f"{self.base_url}/movie/{movie_id}/similar"
+        params = {
+            'api_key': self.api_key,
+            'page': page,
+            'language': 'en-US'
+        }
+        
+        try:
+            response = requests.get(endpoint, params=params, timeout=10)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"TMDB API Error: {e}")
+            return {'results': [], 'total_results': 0}
 
 
 # TMDB Genre Mapping (for reference)

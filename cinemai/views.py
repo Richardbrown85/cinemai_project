@@ -293,6 +293,73 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
     return render(request, 'cinemai/search.html', context)
 
 
+def movie_detail(request, movie_id):
+    """Movie detail page with full info, cast, trailer, and similar movies"""
+    movie = get_object_or_404(Movie, id=movie_id)
+    
+    # Get detailed info from TMDB
+    from .tmdb_service import TMDBService
+    tmdb = TMDBService()
+    
+    # Get full movie details (includes cast, crew, videos)
+    movie_details = tmdb.get_movie_details(movie.tmdb_id) if movie.tmdb_id else None
+    
+    # Get similar movies
+    similar_movies_data = tmdb.get_similar_movies(movie.tmdb_id) if movie.tmdb_id else {'results': []}
+    
+    # Process similar movies (save to DB and display)
+    similar_movies = []
+    for similar_data in similar_movies_data.get('results', [])[:6]:  # Limit to 6
+        similar_movie, created = Movie.objects.get_or_create(
+            tmdb_id=similar_data.get('id'),
+            defaults={
+                'title': similar_data.get('title', ''),
+                'year': int(similar_data.get('release_date', '0000')[:4]) if similar_data.get('release_date') else None,
+                'plot': similar_data.get('overview', ''),
+                'poster_url': tmdb.get_poster_url(similar_data.get('poster_path')),
+                'backdrop_url': tmdb.get_backdrop_url(similar_data.get('backdrop_path')),
+                'rating': similar_data.get('vote_average'),
+                'popularity': similar_data.get('popularity'),
+                'vote_count': similar_data.get('vote_count'),
+            }
+        )
+        similar_movies.append(similar_movie)
+    
+    # Extract trailer URL
+    trailer_url = None
+    if movie_details and 'videos' in movie_details:
+        for video in movie_details['videos'].get('results', []):
+            if video.get('type') == 'Trailer' and video.get('site') == 'YouTube':
+                trailer_url = f"https://www.youtube.com/embed/{video['key']}"
+                break
+    
+    # Extract cast (top 10)
+    cast = []
+    if movie_details and 'credits' in movie_details:
+        cast = movie_details['credits'].get('cast', [])[:10]
+    
+    # Extract genres
+    genres = []
+    if movie_details and 'genres' in movie_details:
+        genres = [g['name'] for g in movie_details['genres']]
+    
+    # Check if in watchlist
+    in_watchlist = False
+    if request.user.is_authenticated:
+        in_watchlist = Watchlist.objects.filter(user=request.user, movie=movie).exists()
+    
+    context = {
+        'movie': movie,
+        'movie_details': movie_details,
+        'trailer_url': trailer_url,
+        'cast': cast,
+        'genres': genres,
+        'similar_movies': similar_movies,
+        'in_watchlist': in_watchlist,
+    }
+    return render(request, 'cinemai/movie_detail.html', context)
+
+
 @login_required
 def watchlist_view(request):
     """User's watchlist view"""
