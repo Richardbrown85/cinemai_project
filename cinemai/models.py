@@ -8,8 +8,8 @@ from django.dispatch import receiver
 
 class SubscriptionTier(models.TextChoices):
     BASIC = 'BASIC', 'Basic - Free'
-    STANDARD = 'STANDARD', 'Standard - $14.99/month'
-    PRO = 'PRO', 'Pro - $19.99/month'
+    STANDARD = 'STANDARD', 'Standard - £9.99/month'
+    PRO = 'PRO', 'Pro - £14.99/month'
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -32,8 +32,8 @@ class UserProfile(models.Model):
     def tier_price(self):
         prices = {
             'BASIC': 0.00,
-            'STANDARD': 14.99,
-            'PRO': 19.99
+            'STANDARD': 9.99,
+            'PRO': 14.99
         }
         return prices.get(self.subscription_tier, 0)
 
@@ -63,6 +63,10 @@ class Movie(models.Model):
     popularity = models.FloatField(null=True, blank=True)
     vote_count = models.IntegerField(null=True, blank=True)
     trailer_url = models.URLField(max_length=500, blank=True, null=True)
+    
+    # Streaming availability (JSON field)
+    streaming_providers = models.JSONField(default=dict, blank=True)
+    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

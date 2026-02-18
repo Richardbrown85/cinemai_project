@@ -165,6 +165,35 @@ class TMDBService:
             return None
         return f"{self.image_base_url}/{size}{backdrop_path}"
     
+    def get_watch_providers(self, movie_id, region='GB'):
+        """
+        Get streaming availability for a movie
+        
+        Args:
+            movie_id (int): TMDB movie ID
+            region (str): Country code (GB, US, etc.)
+            
+        Returns:
+            dict: Watch provider data
+        """
+        endpoint = f"{self.base_url}/movie/{movie_id}/watch/providers"
+        params = {
+            'api_key': self.api_key
+        }
+        
+        try:
+            response = requests.get(endpoint, params=params, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            # Get providers for specific region
+            if 'results' in data and region in data['results']:
+                return data['results'][region]
+            return {}
+        except requests.exceptions.RequestException as e:
+            print(f"TMDB Watch Providers Error: {e}")
+            return {}
+    
     def get_genres(self):
         """Get list of all movie genres"""
         endpoint = f"{self.base_url}/genre/movie/list"
