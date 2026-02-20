@@ -4,7 +4,11 @@ Handles all interactions with The Movie Database API
 """
 
 import requests
+import logging
 from django.conf import settings
+
+# Configure logger
+logger = logging.getLogger(__name__)
 
 
 class TMDBService:
@@ -39,7 +43,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return {'results': [], 'total_results': 0}
     
     def get_movie_details(self, movie_id):
@@ -64,7 +68,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return None
     
     def discover_movies(self, genre_id=None, sort_by='popularity.desc', page=1):
@@ -95,7 +99,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return {'results': [], 'total_results': 0}
     
     def get_popular_movies(self, page=1):
@@ -112,7 +116,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return {'results': [], 'total_results': 0}
     
     def get_trending_movies(self, time_window='week'):
@@ -132,7 +136,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return {'results': [], 'total_results': 0}
     
     def get_poster_url(self, poster_path, size='w500'):
@@ -191,7 +195,7 @@ class TMDBService:
                 return data['results'][region]
             return {}
         except requests.exceptions.RequestException as e:
-            print(f"TMDB Watch Providers Error: {e}")
+            logger.error(f"TMDB Watch Providers Error: {e}")
             return {}
     
     def get_genres(self):
@@ -207,7 +211,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json().get('genres', [])
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return []
     
     def search_by_genre_name(self, genre_name):
@@ -259,7 +263,7 @@ class TMDBService:
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
-            print(f"TMDB API Error: {e}")
+            logger.error(f"TMDB API Error: {e}")
             return {'results': [], 'total_results': 0}
 
 
