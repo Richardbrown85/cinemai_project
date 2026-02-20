@@ -121,13 +121,9 @@ def search_movies(request):
     movies = []
     search_query = ''
     
-    print(f"DEBUG: Request method: {request.method}")
-    
     if request.method == 'POST':
         search_query = request.POST.get('search_query', '')
         genre = request.POST.get('genre', '')
-        
-        print(f"DEBUG: Search query: {search_query}")
         
         # Save search history only for authenticated users
         if request.user.is_authenticated:
@@ -144,7 +140,6 @@ def search_movies(request):
                 
                 # Check if OpenAI is available for smart search
                 if client and settings.OPENAI_API_KEY:
-                    print("DEBUG: Using OpenAI + TMDB for intelligent search")
                     
                     # Use OpenAI to understand the query and suggest movies
                     try:
@@ -169,13 +164,11 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                         )
                         
                         movie_titles = response.choices[0].message.content.strip().split('\n')
-                        print(f"DEBUG: OpenAI suggested {len(movie_titles)} movies")
                         
                         # Search TMDB for each suggested movie
                         for title in movie_titles[:10]:
                             title = title.strip('0123456789. -•')
                             if title:
-                                print(f"DEBUG: Searching TMDB for: {title}")
                                 results = tmdb.search_movies(title)
                                 
                                 # Get the best match (first result)
@@ -211,7 +204,6 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                                     movies.append(movie)
                     
                     except Exception as openai_error:
-                        print(f"DEBUG: OpenAI error, falling back to TMDB: {openai_error}")
                         # Fall back to direct TMDB search
                         results = tmdb.search_movies(search_query)
                         
@@ -245,7 +237,6 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                             movies.append(movie)
                 
                 else:
-                    print("DEBUG: Using TMDB-only search (no OpenAI)")
                     # Direct TMDB search if OpenAI not available
                     results = tmdb.search_movies(search_query)
                     
@@ -277,11 +268,8 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                             movie.save()
                         
                         movies.append(movie)
-                
-                print(f"DEBUG: Total movies to display: {len(movies)}")
                     
             except Exception as e:
-                print(f"DEBUG: Exception occurred: {str(e)}")
                 import traceback
                 traceback.print_exc()
                 messages.error(request, f'Error searching movies: {str(e)}')
