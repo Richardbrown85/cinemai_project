@@ -21,8 +21,11 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('cinemai.urls')),  # Change 'cinema.urls' to 'cinemai.urls'
+    path('', include('cinemai.urls')),
 ]
+
+# Custom error handlers
+handler404 = 'cinemai.views.custom_404'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

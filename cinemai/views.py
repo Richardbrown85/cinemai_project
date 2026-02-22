@@ -579,3 +579,8 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     """Custom password reset confirm view"""
     template_name = 'cinemai/password_reset_confirm.html'
     success_url = reverse_lazy('password_reset_complete')
+
+
+def custom_404(request, exception):
+    """Custom 404 error page"""
+    return render(request, 'cinemai/404.html', status=404)

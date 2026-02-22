@@ -1,0 +1,38 @@
+{% extends 'cinemai/base.html' %}
+
+{% block title %}Page Not Found - CinemAI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="error-page-container">
+        <div class="col-md-8 text-center">
+            <div class="mb-4">
+                <i class="bi bi-film error-icon"></i>
+            </div>
+            
+            <h1 class="error-code">404</h1>
+            <h2 class="mb-4">Page Not Found</h2>
+            
+            <p class="lead error-message mb-4">
+                Looks like this page took an unexpected plot twist and disappeared.
+            </p>
+            
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="{% url 'home' %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house-door"></i> Go Home
+                </a>
+                <a href="{% url 'search' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-search"></i> Search Movies
+                </a>
+            </div>
+            
+            <div class="mt-5">
+                <p class="text-muted small mb-0">
+                    <i class="bi bi-lightbulb"></i> 
+                    Try searching for your favorite movies instead!
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
