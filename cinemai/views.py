@@ -121,6 +121,28 @@ def search_movies(request):
     movies = []
     search_query = ''
     
+    # Helper function to sort movies by relevance
+    def sort_movies_by_relevance(movies_list, query):
+        """Sort movies: exact match > starts with > contains > popularity"""
+        def sort_key(movie):
+            query_lower = query.lower()
+            title_lower = movie.title.lower()
+            
+            # Exact match gets highest priority
+            if query_lower == title_lower:
+                return (0, -movie.popularity if movie.popularity else 0)
+            # Title starts with query
+            elif title_lower.startswith(query_lower):
+                return (1, -movie.popularity if movie.popularity else 0)
+            # Query in title
+            elif query_lower in title_lower:
+                return (2, -movie.popularity if movie.popularity else 0)
+            # No match
+            else:
+                return (3, -movie.popularity if movie.popularity else 0)
+        
+        return sorted(movies_list, key=sort_key)
+    
     if request.method == 'POST':
         search_query = request.POST.get('search_query', '')
         genre = request.POST.get('genre', '')
@@ -144,14 +166,17 @@ def search_movies(request):
                     # Use OpenAI to understand the query and suggest movies
                     try:
                         prompt = f"""Based on this search query: "{search_query}"
-                        
-Suggest 8-10 specific movie titles that match this request. Consider:
+
+If this appears to be a specific movie title, include that exact movie FIRST in your list.
+Then suggest 7-9 additional movies that match this request. Consider:
+- The specific movie if mentioned
 - Genre preferences
 - Themes and plot elements
 - Mood and tone
-- Similar movies if mentioned
+- Similar movies
 
-Return ONLY movie titles, one per line, no numbering or explanation."""
+Return ONLY movie titles, one per line, no numbering or explanation.
+Example: If someone searches "Inception", list "Inception" first, then similar movies."""
 
                         response = client.chat.completions.create(
                             model="gpt-3.5-turbo",
@@ -202,6 +227,9 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                                         movie.save()
                                     
                                     movies.append(movie)
+                        
+                        # Sort results by relevance
+                        movies = sort_movies_by_relevance(movies, search_query)
                     
                     except Exception as openai_error:
                         # Fall back to direct TMDB search
@@ -235,6 +263,9 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                                 movie.save()
                             
                             movies.append(movie)
+                        
+                        # Sort results by relevance
+                        movies = sort_movies_by_relevance(movies, search_query)
                 
                 else:
                     # Direct TMDB search if OpenAI not available
@@ -268,6 +299,9 @@ Return ONLY movie titles, one per line, no numbering or explanation."""
                             movie.save()
                         
                         movies.append(movie)
+                    
+                    # Sort results by relevance
+                    movies = sort_movies_by_relevance(movies, search_query)
                     
             except Exception as e:
                 import traceback
