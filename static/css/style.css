@@ -160,38 +160,38 @@ h1, h2, h3, h4, h5, h6 {
     border-color: var(--accent);
 }
 
-/* Force card text colors to override Bootstrap */
+/* Card text - Bootstrap dark mode handles base colors, we just customize */
 .card-title {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
 .card-text {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .card-body {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
 .card-body p {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .card-body h5 {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
 .card-body small {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
-/* Fix links and paragraphs at bottom of cards */
+/* Card links and paragraphs */
 .card p {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .card a {
-    color: var(--accent) !important;
+    color: var(--accent);
 }
 
 .card-body {
@@ -202,11 +202,11 @@ h1, h2, h3, h4, h5, h6 {
     font-family: "DM Sans", sans-serif;
     font-weight: 500;
     margin-bottom: 0.75rem;
-    color: var(--text-primary) !important; /* Force bright white */
+    color: var(--text-primary);
 }
 
 .card-text {
-    color: var(--text-secondary) !important; /* Force readable grey */
+    color: var(--text-secondary);
 }
 
 .card-footer {
@@ -218,59 +218,54 @@ h1, h2, h3, h4, h5, h6 {
    Forms
    ======================================== */
 .form-control {
-    background-color: var(--bg-surface) !important;
-    border: 1px solid var(--border-subtle) !important;
-    color: var(--text-primary) !important;
-    border-radius: 8px !important;
-    padding: 0.75rem 1rem !important;
-    font-family: "Inter", sans-serif !important;
-    transition: all 0.2s ease !important;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: "Inter", sans-serif;
+    transition: all 0.2s ease;
 }
 
 .form-control:focus {
-    background-color: var(--bg-surface) !important;
-    border-color: var(--accent) !important;
-    color: var(--text-primary) !important;
-    box-shadow: 0 0 0 3px rgba(63, 168, 151, 0.1) !important;
+    background-color: var(--bg-surface);
+    border-color: var(--accent);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 3px rgba(63, 168, 151, 0.1);
 }
 
 .form-control::placeholder {
-    color: var(--text-primary) !important; /* Use bright white */
-    opacity: 0.6 !important; /* Then reduce with opacity */
+    color: var(--text-primary);
+    opacity: 0.6;
 }
 
 .form-label {
-    color: var(--text-primary) !important; /* Bright white labels */
-    font-weight: 500 !important;
-    margin-bottom: 0.5rem !important;
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
 }
 
-/* Force form labels only - not card labels */
+/* Form labels - specific to forms only */
 form label {
-    color: var(--text-primary) !important;
-    font-weight: 500 !important;
+    color: var(--text-primary);
+    font-weight: 500;
 }
 
 /* Ensure card titles stay bright */
 .card-title {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
 .movie-card .card-title {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
 /* Force all headings inside cards to be bright */
 .card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
-    color: var(--text-primary) !important;
+    color: var(--text-primary);
 }
 
-/* Specifically fix the "Create Your Account" heading */
-.card .text-center {
-    color: var(--text-primary) !important;
-}
-
-/* Fix for autofill - force dark background */
+/* Browser autofill override - !important needed for browser defaults */
 .form-control:-webkit-autofill,
 .form-control:-webkit-autofill:hover,
 .form-control:-webkit-autofill:focus,
@@ -590,28 +585,28 @@ footer a:hover {
 }
 
 .text-secondary {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .text-muted {
-    color: var(--text-secondary) !important; /* Brighter than default muted */
+    color: var(--text-secondary);
 }
 
 /* Small help text */
 small {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 small.text-muted {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .text-success {
-    color: var(--success) !important;
+    color: var(--success);
 }
 
 .text-danger {
-    color: var(--error) !important;
+    color: var(--error);
 }
 
 /* ========================================

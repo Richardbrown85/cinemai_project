@@ -298,13 +298,18 @@ def movie_detail(request, movie_id):
     # Process similar movies (save to DB and display)
     similar_movies = []
     for similar_data in similar_movies_data.get('results', [])[:6]:  # Limit to 6
+        # Get poster URL with fallback for missing posters
+        poster_url = tmdb.get_poster_url(similar_data.get('poster_path'))
+        if not poster_url:
+            poster_url = 'https://via.placeholder.com/500x750?text=No+Poster'
+        
         similar_movie, created = Movie.objects.get_or_create(
             tmdb_id=similar_data.get('id'),
             defaults={
                 'title': similar_data.get('title', ''),
                 'year': int(similar_data.get('release_date', '0000')[:4]) if similar_data.get('release_date') else None,
                 'plot': similar_data.get('overview', ''),
-                'poster_url': tmdb.get_poster_url(similar_data.get('poster_path')),
+                'poster_url': poster_url,
                 'backdrop_url': tmdb.get_backdrop_url(similar_data.get('backdrop_path')),
                 'rating': similar_data.get('vote_average'),
                 'popularity': similar_data.get('popularity'),
