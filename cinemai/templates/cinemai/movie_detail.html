@@ -1,6 +1,14 @@
 {% extends 'cinemai/base.html' %}
 
-{% block title %}{{ movie.title }} - CinemAI{% endblock %}
+{% block title %}{{ movie.title }}{% if movie.year %} ({{ movie.year }}){% endif %} - CinemAI{% endblock %}
+
+{% block meta_description %}{{ movie.plot|truncatewords:30|default:"Discover details about "|add:movie.title|add:" including cast, ratings, streaming availability, and similar movie recommendations on CinemAI." }}{% endblock %}
+
+{% block meta_keywords %}{{ movie.title }}, movie details, watch {{ movie.title }}, streaming, cast, reviews{% endblock %}
+
+{% block og_title %}{{ movie.title }}{% if movie.year %} ({{ movie.year }}){% endif %} - CinemAI{% endblock %}
+
+{% block og_description %}{{ movie.plot|truncatewords:25 }}{% endblock %}
 
 {% block content %}
 <!-- Backdrop Image -->

@@ -4,6 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}CinemAI - Discover your next favorite movie with AI-powered recommendations. Search movies by mood, theme, or genre and find where to stream them.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}movie recommendations, AI movies, what to watch, streaming guide, movie search, film discovery{% endblock %}">
+    <meta name="author" content="CinemAI">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="{% block og_title %}CinemAI - AI-Powered Movie Recommendations{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Discover your next favorite movie with intelligent AI-powered search and streaming availability.{% endblock %}">
+    <meta property="og:type" content="website">
+    
     <title>{% block title %}CinemAI - AI-Powered Movie Recommendations{% endblock %}</title>
     
     <!-- Favicon - using same film icon as logo -->
