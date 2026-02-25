@@ -21,8 +21,19 @@ from .forms import SignUpForm, LoginForm, UserUpdateForm, ProfileUpdateForm, Wat
 # Configure Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
-# Configure OpenAI
-client = OpenAI(api_key=settings.OPENAI_API_KEY) if settings.OPENAI_API_KEY else None
+# OpenAI client - lazy initialization
+client = None
+
+def get_openai_client():
+    """Lazy load OpenAI client"""
+    global client
+    if client is None and settings.OPENAI_API_KEY:
+        try:
+            client = OpenAI(api_key=settings.OPENAI_API_KEY)
+        except Exception as e:
+            print(f"OpenAI initialization failed: {e}")
+            client = None
+    return client
 
 
 def home(request):
@@ -161,38 +172,59 @@ def search_movies(request):
                 tmdb = TMDBService()
                 
                 # Check if OpenAI is available for smart search
-                if client and settings.OPENAI_API_KEY:
+                client = get_openai_client()
+                if client:
                     
                     # Use OpenAI to understand the query and suggest movies
                     try:
                         prompt = f"""Based on this search query: "{search_query}"
 
 If this appears to be a specific movie title, include that exact movie FIRST in your list.
-Then suggest 7-9 additional movies that match this request. Consider:
-- The specific movie if mentioned
-- Genre preferences
-- Themes and plot elements
-- Mood and tone
-- Similar movies
+Then suggest 7-9 additional movies that match this request.
 
-Return ONLY movie titles, one per line, no numbering or explanation.
-Example: If someone searches "Inception", list "Inception" first, then similar movies."""
+For EACH movie, provide:
+1. The movie title
+2. A brief reason why it matches (one sentence, 15-20 words max)
+
+Format your response EXACTLY like this:
+Movie Title | Reason why it matches the search
+
+Example:
+Inception | Mind-bending sci-fi thriller exploring dreams within dreams with stunning visuals
+The Matrix | Revolutionary action film questioning reality with groundbreaking special effects
+
+Return 8-10 movies in this format, no numbering, no extra text."""
 
                         response = client.chat.completions.create(
                             model="gpt-3.5-turbo",
                             messages=[
-                                {"role": "system", "content": "You are a movie recommendation expert. Provide accurate, specific movie titles."},
+                                {"role": "system", "content": "You are a movie recommendation expert. Provide accurate, specific movie titles with brief explanations."},
                                 {"role": "user", "content": prompt}
                             ],
-                            max_tokens=200,
+                            max_tokens=300,
                             temperature=0.7
                         )
                         
-                        movie_titles = response.choices[0].message.content.strip().split('\n')
+                        movie_lines = response.choices[0].message.content.strip().split('\n')
+                        
+                        # Parse movie title and reasoning
+                        movie_recommendations = []
+                        for line in movie_lines[:10]:
+                            if '|' in line:
+                                parts = line.split('|', 1)
+                                title = parts[0].strip('0123456789. -•').strip()
+                                reasoning = parts[1].strip() if len(parts) > 1 else None
+                                if title:
+                                    movie_recommendations.append({
+                                        'title': title,
+                                        'reasoning': reasoning
+                                    })
                         
                         # Search TMDB for each suggested movie
-                        for title in movie_titles[:10]:
-                            title = title.strip('0123456789. -•')
+                        for recommendation in movie_recommendations:
+                            title = recommendation['title']
+                            reasoning = recommendation['reasoning']
+                            
                             if title:
                                 results = tmdb.search_movies(title)
                                 
@@ -225,6 +257,9 @@ Example: If someone searches "Inception", list "Inception" first, then similar m
                                     if not created and not movie.streaming_providers:
                                         movie.streaming_providers = providers
                                         movie.save()
+                                    
+                                    # Attach AI reasoning temporarily (not saved to DB)
+                                    movie.ai_reasoning = reasoning
                                     
                                     movies.append(movie)
                         
@@ -508,7 +543,7 @@ def create_checkout_session(request):
                     'quantity': 1,
                 }],
                 mode='subscription',
-                success_url=request.build_absolute_uri('/subscription/success/'),
+                success_url=request.build_absolute_uri(f'/subscription/success/?tier={tier}'),
                 cancel_url=request.build_absolute_uri('/subscription/'),
                 client_reference_id=str(request.user.id),
                 metadata={
@@ -527,7 +562,19 @@ def create_checkout_session(request):
 @login_required
 def subscription_success(request):
     """Subscription success page"""
-    messages.success(request, 'Subscription activated successfully!')
+    # For local development: update subscription tier from URL parameter
+    tier = request.GET.get('tier', 'STANDARD').upper()
+    
+    if tier in ['STANDARD', 'PRO', 'BASIC']:
+        profile = request.user.profile
+        profile.subscription_tier = tier
+        profile.subscription_active = True
+        profile.save()
+        
+        messages.success(request, f'{tier.title()} subscription activated successfully!')
+    else:
+        messages.success(request, 'Subscription activated successfully!')
+    
     return render(request, 'cinemai/subscription_success.html')
 
 
