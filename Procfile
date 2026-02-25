@@ -1,1 +1,1 @@
-web: gunicorn housemd_escape_room_project.wsgi
+web: gunicorn cinemai_project.wsgi
