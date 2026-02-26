@@ -100,7 +100,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS = [BASE_DIR / 'cinemai' / 'static']
 
 # WhiteNoise will serve static files
 STORAGES = {
