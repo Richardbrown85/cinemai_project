@@ -759,3 +759,31 @@ body {
         opacity: 1;
     }
 }
+
+/* ========================================
+   Error Pages
+   ======================================== */
+.error-page-container {
+    min-height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-icon {
+    font-size: 8rem;
+    color: var(--text-secondary);
+    opacity: 0.3;
+}
+
+.error-code {
+    font-family: "DM Sans", sans-serif;
+    font-size: 8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1rem;
+}
+
+.error-message {
+    color: var(--text-secondary);
+}
