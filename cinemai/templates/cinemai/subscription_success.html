@@ -1,4 +1,4 @@
-{% extends 'cinemai/base.html' %}
+{% extends 'cinema/base.html' %}
 
 {% block title %}Subscription Success - CinemAI{% endblock %}
 
@@ -17,10 +17,10 @@
                 </p>
                 <div class="d-grid gap-2">
                     <a href="{% url 'search' %}" class="btn btn-primary btn-lg">
-                        <i class="bi bi-search"></i> Start Searching Movies
+                        <i class="bi bi-search me-2"></i>Start Searching Movies
                     </a>
                     <a href="{% url 'account' %}" class="btn btn-outline-secondary">
-                        View Account Details
+                        <i class="bi bi-person me-2"></i>View Account Details
                     </a>
                 </div>
             </div>
