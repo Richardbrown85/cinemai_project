@@ -98,11 +98,20 @@
                                 {% endif %}
                             </p>
                         </div>
-                        {% if request.user.profile.subscription_tier == 'BASIC' %}
-                            <a href="{% url 'subscription' %}" class="btn btn-outline-primary btn-sm">
-                                <i class="bi bi-arrow-up-circle"></i> Upgrade
-                            </a>
-                        {% endif %}
+                        <div>
+                            {% if request.user.profile.subscription_tier == 'BASIC' %}
+                                <a href="{% url 'subscription' %}" class="btn btn-outline-primary btn-sm">
+                                    <i class="bi bi-arrow-up-circle"></i> Upgrade
+                                </a>
+                            {% else %}
+                                <form method="post" action="{% url 'cancel_subscription' %}" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel your subscription? You will be downgraded to the Basic (Free) plan.');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-x-circle"></i> Cancel Subscription
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>

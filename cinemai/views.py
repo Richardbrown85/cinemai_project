@@ -515,6 +515,38 @@ def subscription_view(request):
 
 
 @login_required
+def cancel_subscription(request):
+    """Cancel user's active subscription"""
+    if request.method == 'POST':
+        profile = request.user.profile
+        
+        # Check if user has an active subscription
+        if not profile.stripe_subscription_id:
+            messages.error(request, 'No active subscription found.')
+            return redirect('account')
+        
+        try:
+            # Cancel the subscription in Stripe
+            stripe.Subscription.delete(profile.stripe_subscription_id)
+            
+            # Update user profile
+            profile.subscription_tier = 'BASIC'
+            profile.subscription_active = False
+            profile.stripe_subscription_id = None
+            profile.save()
+            
+            messages.success(request, 'Your subscription has been cancelled successfully. You now have a Basic (Free) plan.')
+            
+        except stripe.error.StripeError as e:
+            messages.error(request, f'Error cancelling subscription: {str(e)}')
+        
+        return redirect('account')
+    
+    # If not POST, redirect to account
+    return redirect('account')
+
+
+@login_required
 def create_checkout_session(request):
     """Create Stripe checkout session"""
     if request.method == 'POST':
