@@ -9,7 +9,6 @@ from django.dispatch import receiver
 class SubscriptionTier(models.TextChoices):
     BASIC = 'BASIC', 'Basic - Free'
     STANDARD = 'STANDARD', 'Standard - £9.99/month'
-    PRO = 'PRO', 'Pro - £14.99/month'
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
@@ -33,7 +32,6 @@ class UserProfile(models.Model):
         prices = {
             'BASIC': 0.00,
             'STANDARD': 9.99,
-            'PRO': 14.99
         }
         return prices.get(self.subscription_tier, 0)
 
