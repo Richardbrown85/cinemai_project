@@ -158,8 +158,22 @@ def search_movies(request):
         search_query = request.POST.get('search_query', '')
         genre = request.POST.get('genre', '')
         
-        # Save search history only for authenticated users
+        # Check search limits for authenticated users
         if request.user.is_authenticated:
+            from .models import SearchLog
+            can_search, remaining = SearchLog.can_search(request.user)
+            
+            if not can_search:
+                messages.error(request, 'You have reached your daily search limit of 10 searches. Upgrade to Standard for unlimited searches!')
+                return render(request, 'cinemai/search.html', {
+                    'search_limit_reached': True,
+                    'user_tier': request.user.profile.subscription_tier,
+                })
+            
+            # Log the search
+            SearchLog.objects.create(user=request.user, search_query=search_query)
+            
+            # Save search history
             SearchHistory.objects.create(
                 user=request.user,
                 query=search_query,

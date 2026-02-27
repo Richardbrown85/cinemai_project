@@ -10,6 +10,48 @@ class SubscriptionTier(models.TextChoices):
     BASIC = 'BASIC', 'Basic - Free'
     STANDARD = 'STANDARD', 'Standard - £9.99/month'
 
+class SearchLog(models.Model):
+    """Track user searches for rate limiting"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='search_logs')
+    search_query = models.CharField(max_length=255)
+    search_date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['user', 'search_date']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.search_query} ({self.search_date})"
+    
+    @staticmethod
+    def get_daily_search_count(user, date=None):
+        """Get number of searches for a user on a specific date"""
+        from django.utils import timezone
+        if date is None:
+            date = timezone.now().date()
+        return SearchLog.objects.filter(user=user, search_date=date).count()
+    
+    @staticmethod
+    def can_search(user):
+        """Check if user can perform another search"""
+        # Standard users have unlimited searches
+        if hasattr(user, 'profile') and user.profile.subscription_tier == 'STANDARD':
+            return True, 0  # unlimited
+        
+        # Basic users limited to 10/day
+        from django.utils import timezone
+        today_count = SearchLog.get_daily_search_count(user)
+        limit = 10
+        remaining = limit - today_count
+        
+        if today_count >= limit:
+            return False, 0  # limit reached
+        
+        return True, remaining  # can search, X remaining
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     subscription_tier = models.CharField(
