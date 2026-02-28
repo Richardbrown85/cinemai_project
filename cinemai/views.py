@@ -81,7 +81,7 @@ def login_view(request):
     else:
         form = LoginForm()
     
-    return render(request, 'cinemai/login.html', {'form': form})
+    return render(request, 'cinema/login.html', {'form': form})
 
 
 @login_required
@@ -179,6 +179,18 @@ def search_movies(request):
                 query=search_query,
                 genre=genre
             )
+        else:
+            # Guest user - track via session (limit: 3 searches)
+            if 'guest_searches' not in request.session:
+                request.session['guest_searches'] = 0
+            
+            request.session['guest_searches'] += 1
+            
+            if request.session['guest_searches'] > 3:
+                messages.warning(request, 'You have used all 3 free searches. Sign up to get 10 searches per day!')
+                return render(request, 'cinemai/search.html', {
+                    'guest_limit_reached': True,
+                })
         
         if search_query:
             try:

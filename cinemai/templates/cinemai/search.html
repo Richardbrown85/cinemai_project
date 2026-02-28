@@ -13,6 +13,11 @@
         You have <strong>{{ user|searches_remaining }}</strong> searches remaining today. 
         <a href="{% url 'subscription' %}" class="alert-link">Upgrade to Standard</a> for unlimited searches!
     </div>
+    {% elif not user.is_authenticated %}
+    <div class="alert alert-info text-center mb-4">
+        You have used <strong>{{ request.session.guest_searches|default:0 }} of 3</strong> free searches. 
+        <a href="{% url 'signup' %}" class="alert-link">Sign up free</a> to get 10 searches per day!
+    </div>
     {% endif %}
     
     {% if search_limit_reached %}
@@ -23,6 +28,22 @@
         <a href="{% url 'subscription' %}" class="btn btn-primary btn-sm mt-2">
             <i class="bi bi-arrow-up-circle"></i> Upgrade to Standard
         </a>
+    </div>
+    {% endif %}
+    
+    {% if guest_limit_reached %}
+    <div class="alert alert-warning text-center mb-4">
+        <i class="bi bi-exclamation-triangle"></i> 
+        <strong>Free Search Limit Reached!</strong><br>
+        You've used all 3 guest searches. Create a free account to get 10 searches per day!
+        <div class="mt-3">
+            <a href="{% url 'signup' %}" class="btn btn-primary me-2">
+                <i class="bi bi-person-plus"></i> Sign Up Free
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                <i class="bi bi-box-arrow-in-right"></i> Login
+            </a>
+        </div>
     </div>
     {% endif %}
     
