@@ -90,6 +90,52 @@
                         </select>
                     </div>
                     
+                    {% if user.is_authenticated and user.profile.subscription_tier == 'STANDARD' %}
+                    <!-- Advanced Filters - Standard Only -->
+                    <div class="card mb-3" style="background: var(--bg-surface); border: 1px solid var(--accent);">
+                        <div class="card-body">
+                            <h6 class="mb-3">
+                                <i class="bi bi-sliders" style="color: var(--accent);"></i> 
+                                <span style="color: var(--accent);">Advanced Filters</span>
+                                <span class="badge ms-2" style="background: var(--accent); color: #0F1F1B; font-size: 0.7rem;">STANDARD</span>
+                            </h6>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="year_min" class="form-label small">Year From</label>
+                                    <input type="number" class="form-control form-control-sm" id="year_min" name="year_min" 
+                                           min="1900" max="2026" placeholder="1990" value="{{ year_min }}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="year_max" class="form-label small">Year To</label>
+                                    <input type="number" class="form-control form-control-sm" id="year_max" name="year_max" 
+                                           min="1900" max="2026" placeholder="2026" value="{{ year_max }}">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="min_rating" class="form-label small">Min Rating</label>
+                                    <select class="form-control form-control-sm" id="min_rating" name="min_rating">
+                                        <option value="">Any</option>
+                                        <option value="5">5+ ⭐</option>
+                                        <option value="6">6+ ⭐</option>
+                                        <option value="7">7+ ⭐⭐</option>
+                                        <option value="8">8+ ⭐⭐⭐</option>
+                                        <option value="9">9+ ⭐⭐⭐⭐</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% elif user.is_authenticated %}
+                    <!-- Upgrade Prompt for Basic Users -->
+                    <div class="alert alert-info mb-3">
+                        <small>
+                            <i class="bi bi-lock"></i> 
+                            <strong>Advanced Filters</strong> (Year, Rating) are available with 
+                            <a href="{% url 'subscription' %}" class="alert-link">Standard subscription</a>
+                        </small>
+                    </div>
+                    {% endif %}
+                    
                     <button type="submit" class="btn btn-primary btn-lg w-100">
                         <i class="bi bi-stars"></i> Get AI Recommendations
                     </button>

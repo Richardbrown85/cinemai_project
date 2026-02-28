@@ -81,7 +81,7 @@ def login_view(request):
     else:
         form = LoginForm()
     
-    return render(request, 'cinema/login.html', {'form': form})
+    return render(request, 'cinemai/login.html', {'form': form})
 
 
 @login_required
@@ -368,10 +368,42 @@ Return 8-10 movies in this format, no numbering, no extra text."""
                 import traceback
                 traceback.print_exc()
                 messages.error(request, f'Error searching movies: {str(e)}')
+        
+        # Apply Advanced Filters (Standard users only)
+        if request.user.is_authenticated and request.user.profile.subscription_tier == 'STANDARD':
+            year_min = request.POST.get('year_min', '')
+            year_max = request.POST.get('year_max', '')
+            min_rating = request.POST.get('min_rating', '')
+            
+            # Filter by year range
+            if year_min:
+                try:
+                    year_min_int = int(year_min)
+                    movies = [m for m in movies if m.year and m.year >= year_min_int]
+                except ValueError:
+                    pass
+            
+            if year_max:
+                try:
+                    year_max_int = int(year_max)
+                    movies = [m for m in movies if m.year and m.year <= year_max_int]
+                except ValueError:
+                    pass
+            
+            # Filter by minimum rating
+            if min_rating:
+                try:
+                    min_rating_float = float(min_rating)
+                    movies = [m for m in movies if m.rating and m.rating >= min_rating_float]
+                except ValueError:
+                    pass
     
     context = {
         'movies': movies,
         'search_query': search_query,
+        'year_min': request.POST.get('year_min', '') if request.method == 'POST' else '',
+        'year_max': request.POST.get('year_max', '') if request.method == 'POST' else '',
+        'min_rating': request.POST.get('min_rating', '') if request.method == 'POST' else '',
     }
     return render(request, 'cinemai/search.html', context)
 
@@ -582,7 +614,6 @@ def create_checkout_session(request):
         # Stripe Price IDs (GBP)
         price_map = {
             'STANDARD': 'price_1T1qc7Iux0tpDCVobkSiqu2K',  # £9.99/month
-            'PRO': 'price_1T1qcpIux0tpDCVoUgUoP5td',        # £14.99/month
         }
         
         # Basic is FREE - no Stripe needed
@@ -623,7 +654,7 @@ def subscription_success(request):
     # For local development: update subscription tier from URL parameter
     tier = request.GET.get('tier', 'STANDARD').upper()
     
-    if tier in ['STANDARD', 'PRO', 'BASIC']:
+    if tier in ['STANDARD', 'BASIC']:
         profile = request.user.profile
         profile.subscription_tier = tier
         profile.subscription_active = True
