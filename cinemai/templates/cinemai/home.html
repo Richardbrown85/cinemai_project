@@ -24,14 +24,13 @@
                         {% csrf_token %}
                         <div class="search-input-wrapper">
                             <i class="bi bi-search search-icon"></i>
-                            <input 
-                                type="text" 
-                                class="form-control search-input" 
-                                name="search_query"
+                            <label for="search_query" class="visually-hidden">
+                                Search for a movie
+                            </label>
+
+                            <input type="text" id="search_query" class="form-control search-input" name="search_query"
                                 placeholder="What kind of movie are you in the mood for? (e.g., 'action movies with strong female leads')"
-                                required
-                                autofocus
-                            >
+                                required autofocus>
                             <button type="submit" class="btn btn-primary search-btn">
                                 <i class="bi bi-stars"></i> Search
                             </button>
@@ -69,13 +68,13 @@
             <h5 class="text-muted mb-3">Recent Searches</h5>
             <div class="recent-searches">
                 {% if user.search_history.all|slice:":5" %}
-                    {% for search in user.search_history.all|slice:":5" %}
-                        <a href="{% url 'search' %}?q={{ search.query }}" class="recent-search-item">
-                            <i class="bi bi-clock-history"></i> {{ search.query }}
-                        </a>
-                    {% endfor %}
+                {% for search in user.search_history.all|slice:":5" %}
+                <a href="{% url 'search' %}?q={{ search.query }}" class="recent-search-item">
+                    <i class="bi bi-clock-history"></i> {{ search.query }}
+                </a>
+                {% endfor %}
                 {% else %}
-                    <p class="text-muted small">Your search history will appear here</p>
+                <p class="text-muted small">Your search history will appear here</p>
                 {% endif %}
             </div>
         </div>
