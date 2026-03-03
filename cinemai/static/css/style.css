@@ -1,16 +1,17 @@
-/* Import Google Fonts */
-
+/* Import Google Fonts - MUST be first for valid CSS */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
-/* CSS Variables */
+/* CinemAI - Custom Modern Theme */
+
+/* ========================================
+   CSS Variables (Custom Color Palette)
+   ======================================== */
 :root {
-    --primary-font: "Inter", sans-serif;
-    --secondary-font: "DM Sans", sans-serif;
     --bg-primary: #121417;
     --bg-surface: #1A1D22;
     --text-primary: #F9FAFB;
     --text-secondary: #D1D5DB;
-    --text-muted: #D1D5DB;
+    --text-muted: #D1D5DB; /* Updated to match text-secondary for better readability */
     --accent: #3FA897;
     --accent-hover: #359680;
     --border-subtle: #2A2F36;
@@ -19,7 +20,9 @@
     --warning: #F59E0B;
 }
 
-/* Global Styles */
+/* ========================================
+   Global Styles
+   ======================================== */
 * {
     box-sizing: border-box;
 }
@@ -28,26 +31,23 @@ body {
     margin: 0;
     background: var(--bg-primary);
     color: var(--text-primary);
-    font-family: var(--primary-font);
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
     line-height: 1.65;
     min-height: 100vh;
-    padding-top: 70px;
+    padding-top: 70px; /* Space for fixed navbar */
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: var(--secondary-font);
+    font-family: "DM Sans", system-ui, sans-serif;
     font-weight: 500;
     letter-spacing: -0.01em;
     line-height: 1.3;
 }
 
-p {
-    font-family: var(--primary-font);
-}
-
-/* Navigation */
+/* ========================================
+   Navigation Bar
+   ======================================== */
 .navbar {
-    font-family: var(--secondary-font);
     background-color: var(--bg-surface) !important;
     padding: 1.25rem 2rem;
     border-bottom: 1px solid var(--border-subtle);
@@ -58,7 +58,7 @@ p {
 
 .navbar-brand {
     color: var(--text-primary) !important;
-    font-family: var(--secondary-font);
+    font-family: "DM Sans", sans-serif;
     font-weight: 600;
     font-size: 1.5rem;
     letter-spacing: -0.02em;
@@ -84,20 +84,18 @@ p {
     margin-right: 0.35rem;
 }
 
-/* Buttons */
-.btn {
-    font-family: var(--primary-font);
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    cursor: pointer;
-}
-
+/* ========================================
+   Buttons
+   ======================================== */
 .btn-primary {
     background: var(--accent);
     color: #0F1F1B !important;
     border: none;
+    border-radius: 8px;
     padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
+    transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
@@ -118,7 +116,10 @@ p {
     border: 2px solid var(--accent);
     color: var(--accent);
     background: transparent;
+    border-radius: 8px;
     padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
 }
 
 .btn-outline-primary:hover {
@@ -131,6 +132,7 @@ p {
     background: var(--bg-surface);
     color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
+    border-radius: 8px;
 }
 
 .btn-secondary:hover {
@@ -147,7 +149,168 @@ p {
     color: var(--accent-hover);
 }
 
-/* Hero Section */
+/* ========================================
+   Cards
+   ======================================== */
+.card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--accent);
+}
+
+/* Card text - Bootstrap dark mode handles base colors, we just customize */
+.card-title {
+    color: var(--text-primary);
+}
+
+.card-text {
+    color: var(--text-secondary);
+}
+
+.card-body {
+    color: var(--text-primary);
+}
+
+.card-body p {
+    color: var(--text-secondary);
+}
+
+.card-body h5 {
+    color: var(--text-primary);
+}
+
+.card-body small {
+    color: var(--text-secondary);
+}
+
+/* Card links and paragraphs */
+.card p {
+    color: var(--text-secondary);
+}
+
+.card a {
+    color: var(--accent);
+}
+
+.card-body {
+    padding: 1.75rem;
+}
+
+.card-title {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 500;
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+}
+
+.card-text {
+    color: var(--text-secondary);
+}
+
+.card-footer {
+    background: transparent;
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* ========================================
+   Forms
+   ======================================== */
+.form-control {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-family: "Inter", sans-serif;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    background-color: var(--bg-surface);
+    border-color: var(--accent);
+    color: var(--text-primary);
+    box-shadow: 0 0 0 3px rgba(63, 168, 151, 0.1);
+}
+
+.form-control::placeholder {
+    color: var(--text-primary);
+    opacity: 0.6;
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Form labels - specific to forms only */
+form label {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+/* Ensure card titles stay bright */
+.card-title {
+    color: var(--text-primary);
+}
+
+.movie-card .card-title {
+    color: var(--text-primary);
+}
+
+/* Force all headings inside cards to be bright */
+.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
+    color: var(--text-primary);
+}
+
+/* Browser autofill override - !important needed for browser defaults */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus,
+.form-control:-webkit-autofill:active {
+    -webkit-text-fill-color: var(--text-primary) !important;
+    -webkit-box-shadow: 0 0 0px 1000px var(--bg-surface) inset !important;
+    box-shadow: 0 0 0px 1000px var(--bg-surface) inset !important;
+    background-color: var(--bg-surface) !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+    color: var(--text-primary) !important;
+}
+
+/* ========================================
+   Alerts
+   ======================================== */
+.alert {
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-surface);
+}
+
+.alert-danger {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--error);
+    color: var(--error);
+}
+
+.alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.alert-info {
+    background: rgba(63, 168, 151, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* ========================================
+   Hero Section
+   ======================================== */
 .hero-section-simple {
     min-height: 70vh;
     display: flex;
@@ -156,7 +319,7 @@ p {
 }
 
 .brand-title {
-    font-family: var(--secondary-font);
+    font-family: "DM Sans", sans-serif;
     font-size: 3rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -174,7 +337,9 @@ p {
     margin-bottom: 2rem;
 }
 
-/* Search Container */
+/* ========================================
+   Search Container
+   ======================================== */
 .search-container {
     margin-top: 2.5rem;
 }
@@ -198,10 +363,10 @@ p {
 .search-icon {
     position: absolute;
     left: 20px;
-    color: var(--text-primary);
+    color: var(--text-primary); /* Bright white instead of muted */
     font-size: 1.2rem;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.7; /* Slight opacity so it's not too harsh */
 }
 
 .search-input {
@@ -210,18 +375,19 @@ p {
     border: none;
     color: var(--text-primary);
     font-size: 1rem;
-    padding: 16px 20px 16px 55px;
+    padding: 16px 20px 16px 55px; /* Reduced from 70px to 55px */
     outline: none;
-    font-family: var(--primary-font);
+    font-family: "Inter", sans-serif;
 }
 
+/* Override form-control padding when used as search input */
 .form-control.search-input {
-    padding: 16px 20px 16px 55px !important;
+    padding: 16px 20px 16px 55px !important; /* Match above */
 }
 
 .search-input::placeholder {
-    color: var(--text-primary) !important;
-    opacity: 0.8 !important;
+    color: var(--text-primary) !important; /* Bright white */
+    opacity: 0.8 !important; /* Increase from 0.6 to 0.8 for better visibility */
 }
 
 .search-btn {
@@ -232,7 +398,45 @@ p {
     margin-left: 8px;
 }
 
-/* Feature Cards */
+/* ========================================
+   Genre Chips
+   ======================================== */
+.genre-chips {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.chip-label {
+    color: var(--text-primary) !important; /* Bright "Try:" label */
+    font-size: 0.9rem;
+    margin-right: 4px;
+}
+
+.genre-chip {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary) !important; /* Bright text on chips */
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-family: "Inter", sans-serif;
+}
+
+.genre-chip:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0F1F1B;
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   Feature Cards
+   ======================================== */
 .features-simple {
     margin-top: 3rem;
 }
@@ -251,80 +455,83 @@ p {
     font-weight: 500;
 }
 
-/* CTA Box */
+/* ========================================
+   Compact Hero Section (Homepage UX Update)
+   ======================================== */
+.hero-section-compact {
+    min-height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+/* Free Search Badge */
+.badge.bg-success {
+    background-color: var(--accent) !important;
+    color: #0F1F1B !important;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Inline Features */
+.features-inline {
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.feature-badge {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.feature-badge i {
+    color: var(--accent);
+    font-size: 1.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+    /* Spacing handled by mt-4 class */
+}
+
 .cta-box {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
     border-radius: 10px;
-    padding: 2.5rem;
-}
-
-.cta-box h5 {
-    font-family: var(--secondary-font);
-    font-weight: 600;
-}
-
-/* Cards */
-.card {
-    background: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
+    padding: 1.5rem 2rem;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
 }
 
-.card:hover {
+.cta-box:hover {
     border-color: var(--accent);
-    transform: scale(1.02);
 }
 
-.card-title {
-    color: var(--text-primary);
-    font-family: var(--secondary-font);
-    font-weight: 500;
-    margin-bottom: 0.75rem;
+.cta-box p {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
 }
 
-.card-text {
-    color: var(--text-secondary);
+/* Recent Searches Compact */
+.recent-searches-section {
+    padding-top: 2rem;
 }
 
-.card-body {
-    color: var(--text-primary);
-    padding: 1.75rem;
+.recent-searches {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.card-body p {
-    color: var(--text-secondary);
-}
-
-.card-body h5 {
-    color: var(--text-primary);
-}
-
-.card-body small {
-    color: var(--text-secondary);
-}
-
-.card p {
-    color: var(--text-secondary);
-}
-
-.card a {
-    color: var(--accent);
-}
-
-.card-footer {
-    background: transparent;
-    border-top: 1px solid var(--border-subtle);
-}
-
-.card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
-    color: var(--text-primary);
-}
-
-/* Movie Cards */
+/* ========================================
+   Movie Cards
+   ======================================== */
 .movie-card {
     transition: all 0.3s ease;
     cursor: pointer;
@@ -351,10 +558,12 @@ p {
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
-    color: var(--text-primary);
+    color: var(--text-primary); /* Bright white for readability */
 }
 
-/* Subscription Cards */
+/* ========================================
+   Subscription Cards
+   ======================================== */
 .subscription-card {
     transition: all 0.3s ease;
     position: relative;
@@ -368,7 +577,7 @@ p {
 }
 
 .subscription-card h3 {
-    font-family: var(--secondary-font);
+    font-family: "DM Sans", sans-serif;
     font-weight: 600;
 }
 
@@ -383,84 +592,28 @@ p {
     font-weight: 600;
 }
 
-/* Forms */
-.form-control {
-    background-color: var(--bg-surface);
-    border: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-family: var(--primary-font);
-    transition: all 0.2s ease;
-}
-
-.form-control:focus {
-    background-color: var(--bg-surface);
-    border-color: var(--accent);
-    color: var(--text-primary);
-    box-shadow: 0 0 0 3px rgba(63, 168, 151, 0.1);
-}
-
-.form-control::placeholder {
-    color: var(--text-primary);
-    opacity: 0.6;
-}
-
-.form-label {
-    color: var(--text-primary);
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-form label {
-    color: var(--text-primary);
-    font-weight: 500;
-}
-
-.form-control:-webkit-autofill,
-.form-control:-webkit-autofill:hover,
-.form-control:-webkit-autofill:focus,
-.form-control:-webkit-autofill:active {
-    -webkit-text-fill-color: var(--text-primary) !important;
-    -webkit-box-shadow: 0 0 0px 1000px var(--bg-surface) inset !important;
-    box-shadow: 0 0 0px 1000px var(--bg-surface) inset !important;
-    background-color: var(--bg-surface) !important;
-    transition: background-color 5000s ease-in-out 0s !important;
-    color: var(--text-primary) !important;
-}
-
-/* Alerts */
-.alert {
-    border-radius: 8px;
-    border: 1px solid var(--border-subtle);
+/* ========================================
+   CTA Box
+   ======================================== */
+.cta-box {
     background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 2.5rem;
 }
 
-.alert-danger {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: var(--error);
-    color: var(--error);
+.cta-box h5 {
+    font-family: "DM Sans", sans-serif;
+    font-weight: 600;
 }
 
-.alert-success {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: var(--success);
-    color: var(--success);
-}
-
-.alert-info {
-    background: rgba(63, 168, 151, 0.1);
-    border-color: var(--accent);
-    color: var(--accent);
-}
-
-/* Footer */
-.contact-footer,
+/* ========================================
+   Footer
+   ======================================== */
 footer {
     background-color: var(--bg-surface);
-    color: var(--text-primary);
     padding: 2rem 0;
-    margin-top: 0;
+    margin-top: 0; /* Remove top margin for sticky footer */
     border-top: 1px solid var(--border-subtle);
 }
 
@@ -474,7 +627,9 @@ footer a:hover {
     color: var(--accent);
 }
 
-/* Badges */
+/* ========================================
+   Badges
+   ======================================== */
 .badge {
     font-weight: 500;
     padding: 0.4rem 0.75rem;
@@ -499,11 +654,9 @@ footer a:hover {
     background-color: var(--error) !important;
 }
 
-.bg-dark {
-    background-color: var(--bg-surface) !important;
-}
-
-/* Text Colors */
+/* ========================================
+   Text Colors
+   ======================================== */
 .text-primary {
     color: var(--text-primary) !important;
 }
@@ -516,6 +669,7 @@ footer a:hover {
     color: var(--text-secondary);
 }
 
+/* Small help text */
 small {
     color: var(--text-secondary);
 }
@@ -532,11 +686,9 @@ small.text-muted {
     color: var(--error);
 }
 
-.text-warning {
-    color: var(--warning) !important;
-}
-
-/* Links */
+/* ========================================
+   Links
+   ======================================== */
 a {
     color: var(--accent);
     text-decoration: none;
@@ -547,21 +699,81 @@ a:hover {
     color: var(--accent-hover);
 }
 
-/* Icons */
+/* ========================================
+   Icons
+   ======================================== */
 .bi {
     vertical-align: middle;
 }
 
-/* Border Utilities */
-.border-primary {
-    border-color: var(--accent) !important;
+.text-warning {
+    color: var(--warning) !important;
 }
 
-.border-danger {
-    border-color: var(--error) !important;
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .brand-title {
+        font-size: 2rem;
+    }
+    
+    .search-input {
+        font-size: 0.95rem;
+        padding: 14px 16px 14px 45px;
+    }
+    
+    .search-btn {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .hero-section-simple {
+        min-height: 60vh;
+    }
+
+    .hero-section-compact {
+        min-height: 90vh;
+    }
+    
+    .navbar {
+        padding: 1rem;
+    }
+
+    .features-inline {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .badge.bg-success {
+        font-size: 0.85rem !important;
+        padding: 0.4rem 0.8rem !important;
+    }
 }
 
-/* Form Validation */
+/* ========================================
+   Custom Scrollbar
+   ======================================== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-subtle);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* ========================================
+   Form Validation
+   ======================================== */
 .is-invalid {
     border-color: var(--error) !important;
 }
@@ -578,12 +790,16 @@ a:hover {
     color: var(--success);
 }
 
-/* Loading States */
+/* ========================================
+   Loading States
+   ======================================== */
 .spinner-border {
     color: var(--accent);
 }
 
-/* Watchlist Items */
+/* ========================================
+   Watchlist Items
+   ======================================== */
 .recent-search-item {
     background: var(--bg-surface);
     padding: 12px 16px;
@@ -604,7 +820,40 @@ a:hover {
     border-color: var(--accent);
 }
 
-/* Error Pages */
+/* ========================================
+   Utilities
+   ======================================== */
+.bg-dark {
+    background-color: var(--bg-surface) !important;
+}
+
+.border-primary {
+    border-color: var(--accent) !important;
+}
+
+.border-danger {
+    border-color: var(--error) !important;
+}
+
+/* ========================================
+   Page Transitions
+   ======================================== */
+body {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   Error Pages
+   ======================================== */
 .error-page-container {
     min-height: 70vh;
     display: flex;
@@ -619,7 +868,7 @@ a:hover {
 }
 
 .error-code {
-    font-family: var(--secondary-font);
+    font-family: "DM Sans", sans-serif;
     font-size: 8rem;
     font-weight: 700;
     line-height: 1;
@@ -628,61 +877,4 @@ a:hover {
 
 .error-message {
     color: var(--text-secondary);
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: var(--bg-primary);
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--border-subtle);
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--accent);
-}
-
-/* Media Queries */
-@media (max-width: 768px) {
-    body {
-        padding-top: 60px;
-    }
-
-    .brand-title {
-        font-size: 2rem;
-    }
-    
-    .search-input {
-        font-size: 0.95rem;
-        padding: 14px 16px 14px 45px;
-    }
-    
-    .search-btn {
-        padding: 10px 16px;
-        font-size: 0.9rem;
-    }
-    
-    .hero-section-simple {
-        min-height: 60vh;
-    }
-    
-    .navbar {
-        padding: 1rem;
-    }
-
-    .card {
-        margin-bottom: 1rem;
-    }
-}
-
-@media (max-width: 992px) {
-    .card {
-        margin-bottom: 1rem;
-    }
 }

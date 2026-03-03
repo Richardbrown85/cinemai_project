@@ -1,12 +1,9 @@
 {% extends 'cinemai/base.html' %}
 
-{% block title%} Home | CinemAI{% endblock%}
+{% block title %}CinemAI - AI-Powered Movie Recommendations{% endblock %}
 
 {% block content %}
-
-{% load static %}
-
-<div class="hero-section-simple">
+<div class="hero-section-compact">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-xl-7">
@@ -15,88 +12,89 @@
                     <h1 class="brand-title">
                         <i class="bi bi-film"></i> CinemAI
                     </h1>
-                    <p class="brand-subtitle">Discover your next favorite movie with AI</p>
+                    <p class="brand-subtitle">The days of endless scrolling are over, welcome to the new age of film discovery</p>
                 </div>
 
                 <!-- Search Form -->
                 <div class="search-container">
-                    <form method="post" action="{% url 'search' %}">
-                        {% csrf_token %}
+                    <form method="get" action="{% url 'search' %}">
                         <div class="search-input-wrapper">
-                            <i class="bi bi-search search-icon"></i>
-                            <label for="search_query" class="visually-hidden">
-                                Search for a movie
-                            </label>
-
-                            <input type="text" id="search_query" class="form-control search-input" name="search_query"
-                                placeholder="What kind of movie are you in the mood for? (e.g., 'action movies with strong female leads')"
-                                required autofocus>
+                            <label for="search_query" class="visually-hidden">Search for movies</label>
+                            <i class="bi bi-search search-icon" aria-hidden="true"></i>
+                            <input 
+                                type="text" 
+                                class="form-control search-input" 
+                                id="search_query"
+                                name="search_query"
+                                placeholder="What kind of movie are you in the mood for?"
+                                required
+                                autofocus
+                                aria-label="Search for movies by mood, theme, or genre"
+                            >
                             <button type="submit" class="btn btn-primary search-btn">
-                                <i class="bi bi-stars"></i> Search
+                                <i class="bi bi-stars" aria-hidden="true"></i> 
+                                <span>Search</span>
                             </button>
                         </div>
                     </form>
+                    
+                    <!-- Free Search Badge -->
+                    {% if not user.is_authenticated %}
+                    <div class="text-center mt-4">
+                        <span class="badge bg-success fs-6 py-2 px-3">
+                            Try 3 free searches no account needed
+                        </span>
+                    </div>
+                    {% endif %}
                 </div>
 
-                <!-- Features -->
-                <div class="features-simple mt-5">
-                    <div class="row g-3 text-center">
-                        <div class="col-md-4">
-                            <i class="bi bi-robot feature-icon"></i>
-                            <p class="feature-text">AI-Powered Search</p>
-                        </div>
-                        <div class="col-md-4">
-                            <i class="bi bi-bookmark-star feature-icon"></i>
-                            <p class="feature-text">Personal Watchlist</p>
-                        </div>
-                        <div class="col-md-4">
-                            <i class="bi bi-lightning feature-icon"></i>
-                            <p class="feature-text">Free to Use</p>
+                <!-- CTA Section for logged-out users -->
+                {% if not user.is_authenticated %}
+                <div class="cta-section mt-4">
+                    <div class="cta-box text-center">
+                        <p class="text-muted mb-3">Want unlimited searches?</p>
+                        <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                            <a href="{% url 'signup' %}" class="btn btn-outline-primary">
+                                Create Free Account
+                            </a>
+                            <a href="{% url 'login' %}" class="btn btn-link">Already have an account?</a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Optional: Popular Searches Section -->
-{% if user.is_authenticated %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <h5 class="text-muted mb-3">Recent Searches</h5>
-            <div class="recent-searches">
-                {% if user.search_history.all|slice:":5" %}
-                {% for search in user.search_history.all|slice:":5" %}
-                <a href="{% url 'search' %}?q={{ search.query }}" class="recent-search-item">
-                    <i class="bi bi-clock-history"></i> {{ search.query }}
-                </a>
-                {% endfor %}
-                {% else %}
-                <p class="text-muted small">Your search history will appear here</p>
+                <!-- Inline Features -->
+                <div class="features-inline mt-4 text-center">
+                    <span class="feature-badge">
+                        <i class="bi bi-robot"></i> AI-Powered
+                    </span>
+                    <span class="feature-badge">
+                        <i class="bi bi-bookmark-star"></i> Save Favorites
+                    </span>
+                    <span class="feature-badge">
+                        <i class="bi bi-lightning"></i> Instant Results
+                    </span>
+                </div>
+                {% endif %}
+
+                <!-- Recent Searches for logged-in users -->
+                {% if user.is_authenticated %}
+                <div class="recent-searches-section mt-4">
+                    <h6 class="text-muted mb-3 text-center">Recent Searches</h6>
+                    <div class="recent-searches">
+                        {% if user.search_history.all|slice:":5" %}
+                            {% for search in user.search_history.all|slice:":5" %}
+                                <a href="{% url 'search' %}?search_query={{ search.query }}" class="recent-search-item">
+                                    <i class="bi bi-clock-history"></i> {{ search.query }}
+                                </a>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted small text-center">Your search history will appear here</p>
+                        {% endif %}
+                    </div>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
 </div>
-{% endif %}
-
-<!-- Simple CTA for account -->
-{% if not user.is_authenticated %}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8 text-center">
-            <div class="cta-box">
-                <h5>Want to save your watchlist?</h5>
-                <p class="text-muted mb-3">Create a free account to save movies and track what you've watched</p>
-                <a href="{% url 'signup' %}" class="btn btn-outline-primary me-2">Sign Up Free</a>
-                <a href="{% url 'login' %}" class="btn btn-link">Already have an account?</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endif %}
-
-
 {% endblock %}
