@@ -86,34 +86,6 @@
                 {% endif %}
             </div>
 
-            <!-- Trailer -->
-            {% if trailer_url %}
-            <div class="mb-4">
-                <h5><i class="bi bi-play-circle" style="color: var(--accent);"></i> Trailer</h5>
-                
-                <!-- Embedded Player -->
-                <div class="ratio ratio-16x9 mb-3">
-                    <iframe src="{{ trailer_url }}" 
-                            allowfullscreen 
-                            style="border-radius: 10px;"
-                            onerror="this.style.display='none'"></iframe>
-                </div>
-                
-                <!-- YouTube Button (works even if embed is blocked) -->
-                {% if trailer_key %}
-                <a href="https://www.youtube.com/watch?v={{ trailer_key }}" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   class="btn btn-outline-primary">
-                    <i class="bi bi-youtube"></i> Watch on YouTube
-                </a>
-                <p class="text-muted small mt-2 mb-0">
-                    <i class="bi bi-info-circle"></i> If the player above doesn't work, click the button to watch on YouTube directly.
-                </p>
-                {% endif %}
-            </div>
-            {% endif %}
-
             <!-- Streaming Availability -->
             {% if movie.streaming_providers %}
             <div class="card mb-4">
