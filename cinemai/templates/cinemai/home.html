@@ -3,98 +3,124 @@
 {% block title %}CinemAI - AI-Powered Movie Recommendations{% endblock %}
 
 {% block content %}
-<div class="hero-section-compact">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-xl-7">
-                <!-- Logo/Brand -->
-                <div class="text-center mb-4">
-                    <h1 class="brand-title">
+<!-- Hero Section with Backdrop -->
+<div class="hero-landing">
+    <div class="hero-backdrop"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="hero-title">
                         <i class="bi bi-film"></i> CinemAI
                     </h1>
-                    <p class="brand-subtitle">The days of endless scrolling are over, welcome to the new age of film discovery</p>
+                    <p class="hero-subtitle">The days of endless scrolling are over, welcome to the new age of film discovery</p>
+                    <a href="{% url 'signup' %}" class="btn btn-primary btn-hero">
+                        Get Started Free <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <p class="hero-note mt-3">No credit card required</p>
                 </div>
-
-                <!-- Search Form -->
-                <div class="search-container">
-                    <form method="get" action="{% url 'search' %}">
-                        <div class="search-input-wrapper">
-                            <label for="search_query" class="visually-hidden">Search for movies</label>
-                            <i class="bi bi-search search-icon" aria-hidden="true"></i>
-                            <input 
-                                type="text" 
-                                class="form-control search-input" 
-                                id="search_query"
-                                name="search_query"
-                                placeholder="What kind of movie are you in the mood for?"
-                                required
-                                autofocus
-                                aria-label="Search for movies by mood, theme, or genre"
-                            >
-                            <button type="submit" class="btn btn-primary search-btn">
-                                <i class="bi bi-stars" aria-hidden="true"></i> 
-                                <span>Search</span>
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <!-- Free Search Badge -->
-                    {% if not user.is_authenticated %}
-                    <div class="text-center mt-4">
-                        <span class="badge bg-success fs-6 py-2 px-3">
-                            Try 3 free searches no account needed
-                        </span>
-                    </div>
-                    {% endif %}
-                </div>
-
-                <!-- CTA Section for logged-out users -->
-                {% if not user.is_authenticated %}
-                <div class="cta-section mt-4">
-                    <div class="cta-box text-center">
-                        <p class="text-muted mb-3">Want unlimited searches?</p>
-                        <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
-                            <a href="{% url 'signup' %}" class="btn btn-outline-primary">
-                                Create Free Account
-                            </a>
-                            <a href="{% url 'login' %}" class="btn btn-link">Already have an account?</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Inline Features -->
-                <div class="features-inline mt-4 text-center">
-                    <span class="feature-badge">
-                        <i class="bi bi-robot"></i> AI-Powered
-                    </span>
-                    <span class="feature-badge">
-                        <i class="bi bi-bookmark-star"></i> Save Favorites
-                    </span>
-                    <span class="feature-badge">
-                        <i class="bi bi-lightning"></i> Instant Results
-                    </span>
-                </div>
-                {% endif %}
-
-                <!-- Recent Searches for logged-in users -->
-                {% if user.is_authenticated %}
-                <div class="recent-searches-section mt-4">
-                    <h6 class="text-muted mb-3 text-center">Recent Searches</h6>
-                    <div class="recent-searches">
-                        {% if user.search_history.all|slice:":5" %}
-                            {% for search in user.search_history.all|slice:":5" %}
-                                <a href="{% url 'search' %}?search_query={{ search.query }}" class="recent-search-item">
-                                    <i class="bi bi-clock-history"></i> {{ search.query }}
-                                </a>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-muted small text-center">Your search history will appear here</p>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endif %}
             </div>
         </div>
     </div>
 </div>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Why CinemAI?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-robot"></i>
+                    </div>
+                    <h3>AI-Powered Search</h3>
+                    <p>Describe your mood, and our AI finds the perfect movie. No endless scrolling.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-bookmark-star"></i>
+                    </div>
+                    <h3>Personal Watchlist</h3>
+                    <p>Save your discoveries and organize movies you want to watch later.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-tv"></i>
+                    </div>
+                    <h3>Streaming Info</h3>
+                    <p>See exactly where each movie is available to stream in your region.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="pricing-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Choose Your Plan</h2>
+        <div class="row justify-content-center g-4">
+            <!-- Free Plan -->
+            <div class="col-md-5 col-lg-4">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Free</h3>
+                        <div class="price">
+                            <span class="amount">£0</span>
+                            <span class="period">/month</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check-circle text-success"></i> AI movie recommendations</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Personal watchlist</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Streaming availability</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Movie details & ratings</li>
+                    </ul>
+                    <a href="{% url 'signup' %}" class="btn btn-outline-primary w-100">
+                        Get Started Free
+                    </a>
+                </div>
+            </div>
+
+            <!-- Standard Plan -->
+            <div class="col-md-5 col-lg-4">
+                <div class="pricing-card pricing-card-featured">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Standard</h3>
+                        <div class="price">
+                            <span class="amount">£9.99</span>
+                            <span class="period">/month</span>
+                        </div>
+                    </div>
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check-circle text-success"></i> Everything in Free</li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>Unlimited searches</strong></li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>Advanced filters</strong></li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>Priority support</strong></li>
+                    </ul>
+                    <a href="{% url 'subscription' %}" class="btn btn-primary w-100">
+                        Start Free Trial
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section-final py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to discover your next favorite movie?</h2>
+        <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-5">
+            Create Free Account
+        </a>
+    </div>
+</section>
 {% endblock %}
