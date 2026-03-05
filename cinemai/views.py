@@ -49,7 +49,7 @@ def home(request):
 def signup_view(request):
     """User registration view"""
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('search')
     
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -67,7 +67,7 @@ def signup_view(request):
 def login_view(request):
     """User login view"""
     if request.user.is_authenticated:
-        return redirect('home')
+        return redirect('search')
     
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -78,7 +78,7 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {username}!')
-                next_url = request.GET.get('next', 'home')
+                next_url = request.GET.get('next', 'search')
                 return redirect(next_url)
     else:
         form = LoginForm()
