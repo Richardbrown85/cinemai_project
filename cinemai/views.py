@@ -35,7 +35,9 @@ def get_openai_client():
             client = None
     return client
 
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def home(request):
     """Home page view"""
     context = {
@@ -180,17 +182,9 @@ def search_movies(request):
                 genre=genre
             )
         else:
-            # Guest user - track via session (limit: 3 searches)
-            if 'guest_searches' not in request.session:
-                request.session['guest_searches'] = 0
-            
-            request.session['guest_searches'] += 1
-            
-            if request.session['guest_searches'] > 3:
-                messages.warning(request, 'You have used all 3 free searches. Sign up to get 10 searches per day!')
-                return render(request, 'cinemai/search.html', {
-                    'guest_limit_reached': True,
-                })
+            # Redirect to signup - no guest searches allowed
+            messages.info(request, 'Create a free account to start searching for movies!')
+            return redirect('signup')
         
         if search_query:
             try:
@@ -445,35 +439,6 @@ def movie_detail(request, movie_id):
         )
         similar_movies.append(similar_movie)
     
-    # Extract trailer URL (prioritize official trailers, try multiple)
-    trailer_url = None
-    trailer_key = None
-    if movie_details and 'videos' in movie_details:
-        videos = movie_details['videos'].get('results', [])
-        
-        # Try official trailers first
-        trailer_candidates = []
-        
-        # Collect official trailers
-        for video in videos:
-            if video.get('type') == 'Trailer' and video.get('site') == 'YouTube' and video.get('official'):
-                trailer_candidates.append(video)
-        
-        # Add non-official trailers
-        for video in videos:
-            if video.get('type') == 'Trailer' and video.get('site') == 'YouTube' and not video.get('official'):
-                trailer_candidates.append(video)
-        
-        # Add teasers as fallback
-        for video in videos:
-            if video.get('type') == 'Teaser' and video.get('site') == 'YouTube':
-                trailer_candidates.append(video)
-        
-        # Use the first available (some videos may be region-restricted)
-        if trailer_candidates:
-            trailer_key = trailer_candidates[0].get('key')
-            trailer_url = f"https://www.youtube.com/embed/{trailer_key}"
-    
     # Extract cast (top 10)
     cast = []
     if movie_details and 'credits' in movie_details:
@@ -492,8 +457,6 @@ def movie_detail(request, movie_id):
     context = {
         'movie': movie,
         'movie_details': movie_details,
-        'trailer_url': trailer_url,
-        'trailer_key': trailer_key,
         'cast': cast,
         'genres': genres,
         'similar_movies': similar_movies,
