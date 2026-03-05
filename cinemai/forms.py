@@ -20,15 +20,17 @@ class SignUpForm(UserCreationForm):
         })
     )
     password1 = forms.CharField(
+        label='Create Password',
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Password'
+            'placeholder': 'Create Password'
         })
     )
     password2 = forms.CharField(
+        label='Confirm Password',
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Confirm password'
+            'placeholder': 'Confirm Password'
         })
     )
 
