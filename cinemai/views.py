@@ -671,8 +671,8 @@ def stripe_webhook(request):
                     'domain': request.get_host(),
                 }
                 
-                html_message = render_to_string('cinema/subscription_success_email.html', context)
-                plain_message = render_to_string('cinema/subscription_success_email.txt', context)
+                html_message = render_to_string('cinemai/subscription_success_email.html', context)
+                plain_message = render_to_string('cinemai/subscription_success_email.txt', context)
                 
                 send_mail(
                     subject='Welcome to CinemAI Standard Plan!',
@@ -714,8 +714,8 @@ def stripe_webhook(request):
                 'domain': request.get_host(),
             }
             
-            html_message = render_to_string('cinema/subscription_cancelled_email.html', context)
-            plain_message = render_to_string('cinema/subscription_cancelled_email.txt', context)
+            html_message = render_to_string('cinemai/subscription_cancelled_email.html', context)
+            plain_message = render_to_string('cinemai/subscription_cancelled_email.txt', context)
             
             send_mail(
                 subject='CinemAI Subscription Cancelled',
