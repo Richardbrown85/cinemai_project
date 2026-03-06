@@ -622,7 +622,7 @@ def subscription_success(request):
     else:
         messages.success(request, 'Subscription activated successfully!')
     
-    return render(request, 'cinemai/subscription_success.html')
+    return render(request, 'cinema/subscription_success.html')
 
 
 @csrf_exempt
@@ -703,9 +703,11 @@ def stripe_webhook(request):
     elif event['type'] == 'customer.subscription.updated':
         subscription = event['data']['object']
         subscription_id = subscription['id']
+        previous_attributes = event['data'].get('previous_attributes', {})
         
-        # Check if subscription was cancelled
-        if subscription.get('cancel_at_period_end') or subscription.get('status') == 'canceled':
+        # Only handle if subscription is being cancelled (not just created/updated)
+        # Check if cancel_at_period_end changed from False to True
+        if subscription.get('cancel_at_period_end') and not previous_attributes.get('cancel_at_period_end'):
             try:
                 from django.contrib.auth.models import User
                 from django.core.mail import send_mail
@@ -713,19 +715,23 @@ def stripe_webhook(request):
                 from datetime import datetime
                 
                 # Find user by subscription ID
-                profile = UserProfile.objects.get(stripe_subscription_id=subscription_id)
+                try:
+                    profile = UserProfile.objects.get(stripe_subscription_id=subscription_id)
+                except UserProfile.DoesNotExist:
+                    logger.error(f"Profile with subscription {subscription_id} not found")
+                    return JsonResponse({'status': 'success'})
+                
                 user = profile.user
                 
-                # Update profile - keep active until period end
+                # Calculate access until date
                 if subscription.get('current_period_end'):
-                    from datetime import datetime
                     profile.subscription_end_date = datetime.fromtimestamp(subscription['current_period_end'])
                     access_until_date = profile.subscription_end_date.strftime('%B %d, %Y')
                 else:
                     access_until_date = datetime.now().strftime('%B %d, %Y')
                 
                 profile.save()
-                logger.info(f"Subscription cancellation scheduled for user {user.username}")
+                logger.info(f"Subscription cancellation scheduled for user {user.username} until {access_until_date}")
                 
                 # Send cancellation email
                 try:
@@ -751,8 +757,6 @@ def stripe_webhook(request):
                 except Exception as e:
                     logger.error(f"Error sending cancellation email: {e}")
                     
-            except UserProfile.DoesNotExist:
-                logger.error(f"Profile with subscription {subscription_id} not found")
             except Exception as e:
                 logger.error(f"Error in customer.subscription.updated handler: {e}")
     
