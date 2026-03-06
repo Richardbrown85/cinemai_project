@@ -622,7 +622,7 @@ def subscription_success(request):
     else:
         messages.success(request, 'Subscription activated successfully!')
     
-    return render(request, 'cinema/subscription_success.html')
+    return render(request, 'cinemai/subscription_success.html')
 
 
 @csrf_exempt
