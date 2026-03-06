@@ -628,6 +628,9 @@ def subscription_success(request):
 @csrf_exempt
 def stripe_webhook(request):
     """Handle Stripe webhooks"""
+    import logging
+    logger = logging.getLogger(__name__)
+    
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
     
@@ -635,9 +638,11 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError:
+    except ValueError as e:
+        logger.error(f"Webhook ValueError: {e}")
         return JsonResponse({'error': 'Invalid payload'}, status=400)
-    except stripe.error.SignatureVerificationError:
+    except stripe.error.SignatureVerificationError as e:
+        logger.error(f"Webhook SignatureVerificationError: {e}")
         return JsonResponse({'error': 'Invalid signature'}, status=400)
     
     # Handle the event
@@ -651,7 +656,6 @@ def stripe_webhook(request):
                 from django.contrib.auth.models import User
                 from django.core.mail import send_mail
                 from django.template.loader import render_to_string
-                from django.utils.html import strip_tags
                 from datetime import datetime, timedelta
                 
                 user = User.objects.get(id=user_id)
@@ -662,28 +666,95 @@ def stripe_webhook(request):
                 profile.stripe_subscription_id = session.get('subscription')
                 profile.save()
                 
+                logger.info(f"Subscription updated for user {user.username}")
+                
                 # Send subscription success email
-                next_billing_date = (datetime.now() + timedelta(days=30)).strftime('%B %d, %Y')
-                context = {
-                    'user': user,
-                    'next_billing_date': next_billing_date,
-                    'protocol': 'https' if request.is_secure() else 'http',
-                    'domain': request.get_host(),
-                }
-                
-                html_message = render_to_string('cinemai/subscription_success_email.html', context)
-                plain_message = render_to_string('cinemai/subscription_success_email.txt', context)
-                
-                send_mail(
-                    subject='Welcome to CinemAI Standard Plan!',
-                    message=plain_message,
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[user.email],
-                    html_message=html_message,
-                    fail_silently=True,
-                )
+                try:
+                    next_billing_date = (datetime.now() + timedelta(days=30)).strftime('%B %d, %Y')
+                    context = {
+                        'user': user,
+                        'next_billing_date': next_billing_date,
+                        'protocol': 'https',
+                        'domain': request.get_host(),
+                    }
+                    
+                    html_message = render_to_string('cinemai/subscription_success_email.html', context)
+                    plain_message = render_to_string('cinemai/subscription_success_email.txt', context)
+                    
+                    send_mail(
+                        subject='Welcome to CinemAI Standard Plan!',
+                        message=plain_message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[user.email],
+                        html_message=html_message,
+                        fail_silently=False,
+                    )
+                    logger.info(f"Success email sent to {user.email}")
+                except Exception as e:
+                    logger.error(f"Error sending subscription email: {e}")
+                    # Don't fail the webhook if email fails
+                    
             except User.DoesNotExist:
-                pass
+                logger.error(f"User {user_id} not found")
+            except Exception as e:
+                logger.error(f"Error in checkout.session.completed handler: {e}")
+                return JsonResponse({'error': str(e)}, status=500)
+    
+    elif event['type'] == 'customer.subscription.updated':
+        subscription = event['data']['object']
+        subscription_id = subscription['id']
+        
+        # Check if subscription was cancelled
+        if subscription.get('cancel_at_period_end') or subscription.get('status') == 'canceled':
+            try:
+                from django.contrib.auth.models import User
+                from django.core.mail import send_mail
+                from django.template.loader import render_to_string
+                from datetime import datetime
+                
+                # Find user by subscription ID
+                profile = UserProfile.objects.get(stripe_subscription_id=subscription_id)
+                user = profile.user
+                
+                # Update profile - keep active until period end
+                if subscription.get('current_period_end'):
+                    from datetime import datetime
+                    profile.subscription_end_date = datetime.fromtimestamp(subscription['current_period_end'])
+                    access_until_date = profile.subscription_end_date.strftime('%B %d, %Y')
+                else:
+                    access_until_date = datetime.now().strftime('%B %d, %Y')
+                
+                profile.save()
+                logger.info(f"Subscription cancellation scheduled for user {user.username}")
+                
+                # Send cancellation email
+                try:
+                    context = {
+                        'user': user,
+                        'access_until_date': access_until_date,
+                        'protocol': 'https',
+                        'domain': request.get_host(),
+                    }
+                    
+                    html_message = render_to_string('cinemai/subscription_cancelled_email.html', context)
+                    plain_message = render_to_string('cinemai/subscription_cancelled_email.txt', context)
+                    
+                    send_mail(
+                        subject='CinemAI Subscription Cancelled',
+                        message=plain_message,
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[user.email],
+                        html_message=html_message,
+                        fail_silently=False,
+                    )
+                    logger.info(f"Cancellation email sent to {user.email}")
+                except Exception as e:
+                    logger.error(f"Error sending cancellation email: {e}")
+                    
+            except UserProfile.DoesNotExist:
+                logger.error(f"Profile with subscription {subscription_id} not found")
+            except Exception as e:
+                logger.error(f"Error in customer.subscription.updated handler: {e}")
     
     elif event['type'] == 'customer.subscription.deleted':
         subscription = event['data']['object']
@@ -705,30 +776,40 @@ def stripe_webhook(request):
             profile.subscription_end_date = datetime.now()
             profile.save()
             
+            logger.info(f"Subscription cancelled for user {user.username}")
+            
             # Send cancellation email
-            access_until_date = datetime.now().strftime('%B %d, %Y')
-            context = {
-                'user': user,
-                'access_until_date': access_until_date,
-                'protocol': 'https' if request.is_secure() else 'http',
-                'domain': request.get_host(),
-            }
-            
-            html_message = render_to_string('cinemai/subscription_cancelled_email.html', context)
-            plain_message = render_to_string('cinemai/subscription_cancelled_email.txt', context)
-            
-            send_mail(
-                subject='CinemAI Subscription Cancelled',
-                message=plain_message,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[user.email],
-                html_message=html_message,
-                fail_silently=True,
-            )
+            try:
+                access_until_date = datetime.now().strftime('%B %d, %Y')
+                context = {
+                    'user': user,
+                    'access_until_date': access_until_date,
+                    'protocol': 'https',
+                    'domain': request.get_host(),
+                }
+                
+                html_message = render_to_string('cinemai/subscription_cancelled_email.html', context)
+                plain_message = render_to_string('cinemai/subscription_cancelled_email.txt', context)
+                
+                send_mail(
+                    subject='CinemAI Subscription Cancelled',
+                    message=plain_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    html_message=html_message,
+                    fail_silently=False,
+                )
+                logger.info(f"Cancellation email sent to {user.email}")
+            except Exception as e:
+                logger.error(f"Error sending cancellation email: {e}")
+                
         except UserProfile.DoesNotExist:
-            pass
+            logger.error(f"Profile with subscription {subscription_id} not found")
+        except Exception as e:
+            logger.error(f"Error in customer.subscription.deleted handler: {e}")
     
     return JsonResponse({'status': 'success'})
+
 
 
 
