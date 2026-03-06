@@ -1,0 +1,29 @@
+CinemAI - Subscription Cancelled
+==================================
+
+Hi {{ user.username }},
+
+We're sorry to see you go! Your Standard subscription has been cancelled.
+
+YOU STILL HAVE ACCESS UNTIL:
+{{ access_until_date }}
+
+After this date, you'll be automatically moved to our Free plan with 10 searches per day. Your watchlist and account will remain intact.
+
+WHAT YOU'LL KEEP ON FREE PLAN:
+✓ AI movie recommendations
+✓ Personal watchlist
+✓ Streaming availability
+✓ 10 searches per day
+
+WE'D LOVE TO HEAR FROM YOU:
+What could we have done better? Your feedback helps us improve CinemAI for everyone.
+
+Change your mind? Reactivate anytime:
+{{ protocol }}://{{ domain }}/subscription/
+
+We hope to see you again soon!
+The CinemAI Team
+
+---
+© 2026 CinemAI. All rights reserved.

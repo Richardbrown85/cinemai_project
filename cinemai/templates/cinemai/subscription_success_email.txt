@@ -1,0 +1,29 @@
+CinemAI - Welcome to Standard Plan!
+====================================
+
+Hi {{ user.username }},
+
+Your subscription has been successfully activated! You now have unlimited access to all CinemAI features.
+
+WHAT YOU GET:
+✓ Unlimited AI-powered searches
+✓ Advanced search filters
+✓ Priority customer support
+✓ Personal watchlist
+✓ Streaming availability info
+
+SUBSCRIPTION DETAILS:
+Plan: Standard
+Price: £9.99/month
+Next Billing Date: {{ next_billing_date }}
+
+Start discovering your next favorite movie:
+{{ protocol }}://{{ domain }}/search/
+
+You can manage your subscription anytime in your account settings.
+
+Thanks for choosing CinemAI!
+The CinemAI Team
+
+---
+© 2026 CinemAI. All rights reserved.
