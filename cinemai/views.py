@@ -649,6 +649,11 @@ def stripe_webhook(request):
         if user_id:
             try:
                 from django.contrib.auth.models import User
+                from django.core.mail import send_mail
+                from django.template.loader import render_to_string
+                from django.utils.html import strip_tags
+                from datetime import datetime, timedelta
+                
                 user = User.objects.get(id=user_id)
                 profile = user.profile
                 profile.subscription_tier = tier
@@ -656,16 +661,83 @@ def stripe_webhook(request):
                 profile.stripe_customer_id = session.get('customer')
                 profile.stripe_subscription_id = session.get('subscription')
                 profile.save()
+                
+                # Send subscription success email
+                next_billing_date = (datetime.now() + timedelta(days=30)).strftime('%B %d, %Y')
+                context = {
+                    'user': user,
+                    'next_billing_date': next_billing_date,
+                    'protocol': 'https' if request.is_secure() else 'http',
+                    'domain': request.get_host(),
+                }
+                
+                html_message = render_to_string('cinema/subscription_success_email.html', context)
+                plain_message = render_to_string('cinema/subscription_success_email.txt', context)
+                
+                send_mail(
+                    subject='Welcome to CinemAI Standard Plan!',
+                    message=plain_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[user.email],
+                    html_message=html_message,
+                    fail_silently=True,
+                )
             except User.DoesNotExist:
                 pass
     
+    elif event['type'] == 'customer.subscription.deleted':
+        subscription = event['data']['object']
+        subscription_id = subscription['id']
+        
+        try:
+            from django.contrib.auth.models import User
+            from django.core.mail import send_mail
+            from django.template.loader import render_to_string
+            from datetime import datetime
+            
+            # Find user by subscription ID
+            profile = UserProfile.objects.get(stripe_subscription_id=subscription_id)
+            user = profile.user
+            
+            # Update profile
+            profile.subscription_tier = 'BASIC'
+            profile.subscription_active = False
+            profile.subscription_end_date = datetime.now()
+            profile.save()
+            
+            # Send cancellation email
+            access_until_date = datetime.now().strftime('%B %d, %Y')
+            context = {
+                'user': user,
+                'access_until_date': access_until_date,
+                'protocol': 'https' if request.is_secure() else 'http',
+                'domain': request.get_host(),
+            }
+            
+            html_message = render_to_string('cinema/subscription_cancelled_email.html', context)
+            plain_message = render_to_string('cinema/subscription_cancelled_email.txt', context)
+            
+            send_mail(
+                subject='CinemAI Subscription Cancelled',
+                message=plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[user.email],
+                html_message=html_message,
+                fail_silently=True,
+            )
+        except UserProfile.DoesNotExist:
+            pass
+    
     return JsonResponse({'status': 'success'})
+
 
 
 class CustomPasswordResetView(PasswordResetView):
     """Custom password reset view"""
     template_name = 'cinemai/password_reset.html'
     email_template_name = 'cinemai/password_reset_email.html'
+    html_email_template_name = 'cinemai/password_reset_email.html'
+    subject_template_name = 'cinemai/password_reset_subject.txt'
     success_url = reverse_lazy('password_reset_done')
 
 
