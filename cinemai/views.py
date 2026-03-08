@@ -714,9 +714,10 @@ def stripe_webhook(request):
                         fail_silently=False,
                     )
                 except Exception as e:
-                    # Don't fail the webhook if email fails
+                    pass
                     
             except User.DoesNotExist:
+                pass
             except Exception as e:
                 return JsonResponse({'error': str(e)}, status=500)
     
@@ -773,8 +774,10 @@ def stripe_webhook(request):
                         fail_silently=False,
                     )
                 except Exception as e:
+                    pass
                     
             except Exception as e:
+                pass
     
     elif event['type'] == 'customer.subscription.deleted':
         subscription = event['data']['object']
@@ -819,9 +822,12 @@ def stripe_webhook(request):
                     fail_silently=False,
                 )
             except Exception as e:
+                pass
                 
         except UserProfile.DoesNotExist:
+            pass
         except Exception as e:
+            pass
     
     return JsonResponse({'status': 'success'})
 
