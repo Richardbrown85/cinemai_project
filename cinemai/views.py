@@ -31,7 +31,6 @@ def get_openai_client():
         try:
             client = OpenAI(api_key=settings.OPENAI_API_KEY)
         except Exception as e:
-            print(f"OpenAI initialization failed: {e}")
             client = None
     return client
 
@@ -570,9 +569,7 @@ def cancel_subscription(request):
                     html_message=html_message,
                     fail_silently=True,
                 )
-                print(f"📧 DEBUG: Cancellation email sent to {request.user.email}")
             except Exception as e:
-                print(f"❌ DEBUG: Error sending cancellation email: {e}")
             
             # Update user profile
             profile.subscription_tier = 'BASIC'
@@ -657,8 +654,6 @@ def subscription_success(request):
 @csrf_exempt
 def stripe_webhook(request):
     """Handle Stripe webhooks"""
-    import logging
-    logger = logging.getLogger(__name__)
     
     payload = request.body
     sig_header = request.META.get('HTTP_STRIPE_SIGNATURE')
@@ -668,10 +663,8 @@ def stripe_webhook(request):
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
     except ValueError as e:
-        logger.error(f"Webhook ValueError: {e}")
         return JsonResponse({'error': 'Invalid payload'}, status=400)
     except stripe.error.SignatureVerificationError as e:
-        logger.error(f"Webhook SignatureVerificationError: {e}")
         return JsonResponse({'error': 'Invalid signature'}, status=400)
     
     # Handle the event
@@ -694,11 +687,9 @@ def stripe_webhook(request):
                 profile.stripe_customer_id = session.get('customer')
                 profile.stripe_subscription_id = session.get('subscription')
                 
-                print(f"🔍 DEBUG: Checkout session data: customer={session.get('customer')}, subscription={session.get('subscription')}")
                 
                 profile.save()
                 
-                print(f"✅ DEBUG: Subscription updated for user {user.username}, subscription_id={profile.stripe_subscription_id}")
                 
                 # Send subscription success email
                 try:
@@ -721,15 +712,11 @@ def stripe_webhook(request):
                         html_message=html_message,
                         fail_silently=False,
                     )
-                    print(f"📧 DEBUG: Success email sent to {user.email}")
                 except Exception as e:
-                    print(f"❌ DEBUG: Error sending subscription email: {e}")
                     # Don't fail the webhook if email fails
                     
             except User.DoesNotExist:
-                logger.error(f"User {user_id} not found")
             except Exception as e:
-                logger.error(f"Error in checkout.session.completed handler: {e}")
                 return JsonResponse({'error': str(e)}, status=500)
     
     elif event['type'] == 'customer.subscription.updated':
@@ -737,13 +724,10 @@ def stripe_webhook(request):
         subscription_id = subscription['id']
         previous_attributes = event['data'].get('previous_attributes', {})
         
-        print(f"🔔 DEBUG: subscription.updated received for {subscription_id}")
-        print(f"🔔 DEBUG: cancel_at_period_end={subscription.get('cancel_at_period_end')}, previous={previous_attributes.get('cancel_at_period_end')}")
         
         # Only handle if subscription is being cancelled (not just created/updated)
         # Check if cancel_at_period_end changed from False to True
         if subscription.get('cancel_at_period_end') and not previous_attributes.get('cancel_at_period_end'):
-            print(f"🚨 DEBUG: This is a cancellation! Looking for subscription {subscription_id}")
             try:
                 from django.contrib.auth.models import User
                 from django.core.mail import send_mail
@@ -753,9 +737,7 @@ def stripe_webhook(request):
                 # Find user by subscription ID
                 try:
                     profile = UserProfile.objects.get(stripe_subscription_id=subscription_id)
-                    print(f"✅ DEBUG: Found profile for user {profile.user.username}")
                 except UserProfile.DoesNotExist:
-                    print(f"❌ DEBUG: Profile with subscription {subscription_id} not found")
                     return JsonResponse({'status': 'success'})
                 
                 user = profile.user
@@ -768,7 +750,6 @@ def stripe_webhook(request):
                     access_until_date = datetime.now().strftime('%B %d, %Y')
                 
                 profile.save()
-                logger.info(f"Subscription cancellation scheduled for user {user.username} until {access_until_date}")
                 
                 # Send cancellation email
                 try:
@@ -790,12 +771,9 @@ def stripe_webhook(request):
                         html_message=html_message,
                         fail_silently=False,
                     )
-                    print(f"📧 DEBUG: Cancellation email sent to {user.email}")
                 except Exception as e:
-                    print(f"❌ DEBUG: Error sending cancellation email: {e}")
                     
             except Exception as e:
-                logger.error(f"Error in customer.subscription.updated handler: {e}")
     
     elif event['type'] == 'customer.subscription.deleted':
         subscription = event['data']['object']
@@ -817,7 +795,6 @@ def stripe_webhook(request):
             profile.subscription_end_date = datetime.now()
             profile.save()
             
-            logger.info(f"Subscription cancelled for user {user.username}")
             
             # Send cancellation email
             try:
@@ -840,14 +817,10 @@ def stripe_webhook(request):
                     html_message=html_message,
                     fail_silently=False,
                 )
-                logger.info(f"Cancellation email sent to {user.email}")
             except Exception as e:
-                logger.error(f"Error sending cancellation email: {e}")
                 
         except UserProfile.DoesNotExist:
-            logger.error(f"Profile with subscription {subscription_id} not found")
         except Exception as e:
-            logger.error(f"Error in customer.subscription.deleted handler: {e}")
     
     return JsonResponse({'status': 'success'})
 
