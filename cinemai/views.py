@@ -708,9 +708,13 @@ def stripe_webhook(request):
         subscription_id = subscription['id']
         previous_attributes = event['data'].get('previous_attributes', {})
         
+        print(f"🔔 DEBUG: subscription.updated received for {subscription_id}")
+        print(f"🔔 DEBUG: cancel_at_period_end={subscription.get('cancel_at_period_end')}, previous={previous_attributes.get('cancel_at_period_end')}")
+        
         # Only handle if subscription is being cancelled (not just created/updated)
         # Check if cancel_at_period_end changed from False to True
         if subscription.get('cancel_at_period_end') and not previous_attributes.get('cancel_at_period_end'):
+            print(f"🚨 DEBUG: This is a cancellation! Looking for subscription {subscription_id}")
             try:
                 from django.contrib.auth.models import User
                 from django.core.mail import send_mail
@@ -720,8 +724,9 @@ def stripe_webhook(request):
                 # Find user by subscription ID
                 try:
                     profile = UserProfile.objects.get(stripe_subscription_id=subscription_id)
+                    print(f"✅ DEBUG: Found profile for user {profile.user.username}")
                 except UserProfile.DoesNotExist:
-                    logger.error(f"Profile with subscription {subscription_id} not found")
+                    print(f"❌ DEBUG: Profile with subscription {subscription_id} not found")
                     return JsonResponse({'status': 'success'})
                 
                 user = profile.user
@@ -756,9 +761,9 @@ def stripe_webhook(request):
                         html_message=html_message,
                         fail_silently=False,
                     )
-                    logger.info(f"Cancellation email sent to {user.email}")
+                    print(f"📧 DEBUG: Cancellation email sent to {user.email}")
                 except Exception as e:
-                    logger.error(f"Error sending cancellation email: {e}")
+                    print(f"❌ DEBUG: Error sending cancellation email: {e}")
                     
             except Exception as e:
                 logger.error(f"Error in customer.subscription.updated handler: {e}")
