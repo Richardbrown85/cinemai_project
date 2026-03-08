@@ -570,6 +570,7 @@ def cancel_subscription(request):
                     fail_silently=True,
                 )
             except Exception as e:
+                pass
             
             # Update user profile
             profile.subscription_tier = 'BASIC'
