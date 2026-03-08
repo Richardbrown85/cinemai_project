@@ -545,6 +545,35 @@ def cancel_subscription(request):
             # Cancel the subscription in Stripe
             stripe.Subscription.delete(profile.stripe_subscription_id)
             
+            # Send cancellation email BEFORE clearing subscription_id
+            from django.core.mail import send_mail
+            from django.template.loader import render_to_string
+            from datetime import datetime
+            
+            try:
+                access_until_date = datetime.now().strftime('%B %d, %Y')
+                context = {
+                    'user': request.user,
+                    'access_until_date': access_until_date,
+                    'protocol': 'https' if request.is_secure() else 'http',
+                    'domain': request.get_host(),
+                }
+                
+                html_message = render_to_string('cinemai/subscription_cancelled_email.html', context)
+                plain_message = render_to_string('cinemai/subscription_cancelled_email.txt', context)
+                
+                send_mail(
+                    subject='CinemAI Subscription Cancelled',
+                    message=plain_message,
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[request.user.email],
+                    html_message=html_message,
+                    fail_silently=True,
+                )
+                print(f"📧 DEBUG: Cancellation email sent to {request.user.email}")
+            except Exception as e:
+                print(f"❌ DEBUG: Error sending cancellation email: {e}")
+            
             # Update user profile
             profile.subscription_tier = 'BASIC'
             profile.subscription_active = False
