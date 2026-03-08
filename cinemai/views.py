@@ -664,9 +664,12 @@ def stripe_webhook(request):
                 profile.subscription_active = True
                 profile.stripe_customer_id = session.get('customer')
                 profile.stripe_subscription_id = session.get('subscription')
+                
+                logger.info(f"Checkout session data: customer={session.get('customer')}, subscription={session.get('subscription')}")
+                
                 profile.save()
                 
-                logger.info(f"Subscription updated for user {user.username}")
+                logger.info(f"Subscription updated for user {user.username}, subscription_id={profile.stripe_subscription_id}")
                 
                 # Send subscription success email
                 try:
