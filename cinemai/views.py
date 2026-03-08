@@ -665,11 +665,11 @@ def stripe_webhook(request):
                 profile.stripe_customer_id = session.get('customer')
                 profile.stripe_subscription_id = session.get('subscription')
                 
-                logger.info(f"Checkout session data: customer={session.get('customer')}, subscription={session.get('subscription')}")
+                print(f"🔍 DEBUG: Checkout session data: customer={session.get('customer')}, subscription={session.get('subscription')}")
                 
                 profile.save()
                 
-                logger.info(f"Subscription updated for user {user.username}, subscription_id={profile.stripe_subscription_id}")
+                print(f"✅ DEBUG: Subscription updated for user {user.username}, subscription_id={profile.stripe_subscription_id}")
                 
                 # Send subscription success email
                 try:
@@ -692,9 +692,9 @@ def stripe_webhook(request):
                         html_message=html_message,
                         fail_silently=False,
                     )
-                    logger.info(f"Success email sent to {user.email}")
+                    print(f"📧 DEBUG: Success email sent to {user.email}")
                 except Exception as e:
-                    logger.error(f"Error sending subscription email: {e}")
+                    print(f"❌ DEBUG: Error sending subscription email: {e}")
                     # Don't fail the webhook if email fails
                     
             except User.DoesNotExist:
