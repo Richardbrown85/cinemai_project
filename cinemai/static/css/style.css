@@ -693,6 +693,26 @@ a:hover {
     color: var(--accent-hover);
 }
 
+/* Test Mode Banner */
+.test-mode-banner {
+    background: var(--accent);
+    color: #0F1F1B;
+    text-align: center;
+    padding: 1rem;
+    margin: 0;
+    margin-top: 1rem; 
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.test-mode-banner i {
+    font-size: 1.1rem;
+}
+
 /* ========================================
    Responsive
    ======================================== */
