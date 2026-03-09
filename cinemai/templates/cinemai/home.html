@@ -12,7 +12,8 @@
             <div class="row justify-content-center text-center">
                 <div class="col-lg-12">
                     <h1 class="hero-title">
-                        <i class="bi bi-film"></i> CinemAI</h1>
+                        <i class="bi bi-film"></i> CinemAI
+                    </h1>
                     <p class="hero-subtitle">Stop scrolling. Start watching.</p>
                     <a href="{% url 'signup' %}" class="btn btn-primary btn-hero">
                     Get Started</a>
@@ -63,48 +64,44 @@
 <section class="pricing-section py-4">
     <div class="container">
         <h2 class="text-center mb-4">Choose Your Plan</h2>
-        <div class="row justify-content-center g-4">
-            <!-- Free Plan -->
-            <div class="col-md-5 col-lg-4">
-                <div class="pricing-card">
-                    <div class="pricing-header">
-                        <h3>Free</h3>
-                        <div class="price">
-                            <span class="amount">£0</span>
-                            <span class="period">/month</span>
-                        </div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li><i class="bi bi-check-circle text-success"></i> AI movie recommendations</li>
-                        <li><i class="bi bi-check-circle text-success"></i> Personal watchlist</li>
-                        <li><i class="bi bi-check-circle text-success"></i> Streaming availability</li>
-                        <li><i class="bi bi-check-circle text-success"></i> Movie details & ratings</li>
+        <div class="row g-4 justify-content-center">
+            <!-- Basic - FREE -->
+            <div class="col-md-5">
+                <div class="card subscription-card p-4 text-center h-100">
+                    <h3 class="mb-3">Basic</h3>
+                    <h2 class="mb-1">Free</h2>
+                    <p class="text-muted mb-4">Forever</p>
+                    <ul class="list-unstyled mb-4 text-start">
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> AI Movie Search</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Personal Watchlist</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Search History</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> 10 Searches per day</li>
+                        <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> Unlimited Searches</li>
+                        <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> Advanced Filters</li>
+                        <li class="mb-2 text-muted"><i class="bi bi-x-circle"></i> AI Reasoning</li>
                     </ul>
                     <a href="{% url 'signup' %}" class="btn btn-outline-primary w-100">
-                        Get Started
+                        Get Started Free
                     </a>
                 </div>
             </div>
-
-            <!-- Standard Plan -->
-            <div class="col-md-5 col-lg-4">
-                <div class="pricing-card pricing-card-featured">
-                    <div class="pricing-badge">Most Popular</div>
-                    <div class="pricing-header">
-                        <h3>Standard</h3>
-                        <div class="price">
-                            <span class="amount">£9.99</span>
-                            <span class="period">/month</span>
-                        </div>
-                    </div>
-                    <ul class="pricing-features">
-                        <li><i class="bi bi-check-circle text-success"></i> Everything in Free</li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>Unlimited searches</strong></li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>Advanced filters</strong></li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>Priority support</strong></li>
+            
+            <!-- Standard - £9.99 -->
+            <div class="col-md-5">
+                <div class="card subscription-card p-4 text-center h-100" style="border: 2px solid var(--accent);">
+                    <span class="badge mb-2" style="background: var(--accent); color: #0F1F1B;">RECOMMENDED</span>
+                    <h3 class="mb-3">Standard</h3>
+                    <h2 class="mb-1">£9.99</h2>
+                    <p class="text-muted mb-4">per month</p>
+                    <ul class="list-unstyled mb-4 text-start">
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Everything in Basic</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Unlimited Searches</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Advanced Filters (Genre, Year, Rating)</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> AI Reasoning - See why movies match</li>
+                        <li class="mb-2"><i class="bi bi-check-circle" style="color: var(--accent);"></i> Priority Support</li>
                     </ul>
                     <a href="{% url 'subscription' %}" class="btn btn-primary w-100">
-                        Start Free Trial
+                        Upgrade to Standard
                     </a>
                 </div>
             </div>

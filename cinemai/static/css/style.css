@@ -163,6 +163,23 @@ h1, h2, h3, h4, h5, h6 {
     border: 1px solid var(--border-subtle);
     border-radius: 10px;
     transition: all 0.3s ease;
+    display: flex;                    
+    flex-direction: column;            
+}
+
+/* Subscription card flexbox for aligned buttons */
+.subscription-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.subscription-card .list-unstyled {
+    flex: 1;
+}
+
+.subscription-card .btn {
+    margin-top: auto;
 }
 
 .card:hover {
