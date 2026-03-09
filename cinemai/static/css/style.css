@@ -623,6 +623,22 @@ footer a:hover {
     color: var(--accent);
 }
 
+/* Social Media Links */
+.social-links a {
+    color: var(--accent);
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.social-links a:hover {
+    color: var(--accent-hover);
+    transform: translateY(-3px);
+}
+
+.social-links i {
+    font-size: 2rem !important;
+}
+
 /* ========================================
    Utilities
    ======================================== */
