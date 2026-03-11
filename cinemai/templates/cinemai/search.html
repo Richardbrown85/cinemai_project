@@ -163,60 +163,9 @@
                                     {% endif %}
                                 </p>
                             {% endif %}
+                            
                             {% if movie.plot %}
                                 <p class="card-text text-muted small mt-2">{{ movie.plot|truncatewords:20 }}</p>
-                            {% endif %}
-                            
-                            <!-- Streaming Availability -->
-                            {% if movie.streaming_providers %}
-                                <div class="streaming-providers mt-3 pt-2" style="border-top: 1px solid var(--border-subtle);">
-                                    <p class="mb-2 small text-muted" style="font-weight: 600;">
-                                        <i class="bi bi-tv"></i> Watch on:
-                                    </p>
-                                    
-                                    {% if movie.streaming_providers.flatrate %}
-                                        <div class="mb-2">
-                                            <small class="text-muted d-block mb-1">Stream:</small>
-                                            <div class="d-flex flex-wrap gap-1">
-                                                {% for provider in movie.streaming_providers.flatrate %}
-                                                    <span class="badge" style="background: var(--accent); color: #0F1F1B; font-size: 0.75rem;">
-                                                        {{ provider.provider_name }}
-                                                    </span>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    
-                                    {% if movie.streaming_providers.rent %}
-                                        <div class="mb-2">
-                                            <small class="text-muted d-block mb-1">Rent:</small>
-                                            <div class="d-flex flex-wrap gap-1">
-                                                {% for provider in movie.streaming_providers.rent %}
-                                                    <span class="badge bg-secondary" style="font-size: 0.75rem;">
-                                                        {{ provider.provider_name }}
-                                                    </span>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                    
-                                    {% if movie.streaming_providers.buy %}
-                                        <div>
-                                            <small class="text-muted d-block mb-1">Buy:</small>
-                                            <div class="d-flex flex-wrap gap-1">
-                                                {% for provider in movie.streaming_providers.buy %}
-                                                    <span class="badge bg-secondary" style="font-size: 0.75rem;">
-                                                        {{ provider.provider_name }}
-                                                    </span>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% else %}
-                                <p class="text-muted small mt-3 mb-0">
-                                    <i class="bi bi-info-circle"></i> Streaming info not available
-                                </p>
                             {% endif %}
                         </div>
                         <div class="card-footer bg-transparent">

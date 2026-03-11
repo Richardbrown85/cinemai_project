@@ -524,6 +524,25 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.5rem;
 }
 
+/* Movie Card Fixed Height for Aligned Buttons */
+.movie-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.movie-card .card-body {
+    flex: 1;
+    max-height: 205px;  /* Approximately 7 lines of text */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+}
+
+.movie-card .card-footer {
+    margin-top: auto;
+}
+
 /* ========================================
    Search Page
    ======================================== */
