@@ -73,13 +73,13 @@
                             </p>
                         </div>
                         <div class="card-footer bg-transparent">
-                            <div class="d-flex gap-2">
-                                <a href="{% url 'update_watchlist' item.id %}" class="btn btn-outline-primary btn-sm flex-fill">
+                            <div class="watchlist-buttons">
+                                <a href="{% url 'update_watchlist' item.id %}" class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
-                                <form method="post" action="{% url 'remove_from_watchlist' item.id %}" class="flex-fill">
+                                <form method="post" action="{% url 'remove_from_watchlist' item.id %}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-outline-danger btn-sm w-100" 
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" 
                                             onclick="return confirm('Remove {{ item.movie.title }} from watchlist?')">
                                         <i class="bi bi-trash"></i> Remove
                                     </button>
