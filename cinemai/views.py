@@ -464,8 +464,14 @@ def watchlist_view(request):
     """User's watchlist view"""
     watchlist_items = Watchlist.objects.filter(user=request.user).select_related('movie')
     
+    # Calculate watched vs to watch counts
+    watched_count = watchlist_items.filter(watched=True).count()
+    to_watch_count = watchlist_items.filter(watched=False).count()
+    
     context = {
         'watchlist_items': watchlist_items,
+        'watched_count': watched_count,
+        'to_watch_count': to_watch_count,
     }
     return render(request, 'cinemai/watchlist.html', context)
 
