@@ -189,9 +189,35 @@ def search_movies(request):
                 client = get_openai_client()
                 if client:
                     
+                    # Get filter values
+                    year_min = request.POST.get('year_min', '')
+                    year_max = request.POST.get('year_max', '')
+                    min_rating = request.POST.get('min_rating', '')
+                    
+                    # Build enhanced query with filters
+                    enhanced_query = search_query
+                    filter_hints = []
+                    
+                    if year_min or year_max:
+                        if year_min and year_max:
+                            filter_hints.append(f"released between {year_min} and {year_max}")
+                        elif year_min:
+                            filter_hints.append(f"released from {year_min} onwards")
+                        elif year_max:
+                            filter_hints.append(f"released up to {year_max}")
+                    
+                    if min_rating:
+                        filter_hints.append(f"with rating {min_rating}+ out of 10")
+                    
+                    if genre:
+                        filter_hints.append(f"in the {genre} genre")
+                    
+                    if filter_hints:
+                        enhanced_query = f"{search_query} ({', '.join(filter_hints)})"
+                    
                     # Use OpenAI to understand the query and suggest movies
                     try:
-                        prompt = f"""Based on this search query: "{search_query}"
+                        prompt = f"""Based on this search query: "{enhanced_query}"
 
 If this appears to be a specific movie title, include that exact movie FIRST in your list.
 Then suggest 7-9 additional movies that match this request.
