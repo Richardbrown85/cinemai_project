@@ -36,11 +36,11 @@
                      alt="{{ movie.title }} poster" 
                      class="img-fluid rounded" 
                      style="width: 100%;"
-                     onerror="this.onerror=null; this.src='https://via.placeholder.com/500x750?text=No+Poster'; this.style.backgroundColor='#374151'; this.style.padding='2rem';">
+                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22750%22%3E%3Crect fill=%22%23374151%22 width=%22500%22 height=%22750%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2260%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';">
             {% else %}
                 <div class="bg-secondary d-flex align-items-center justify-content-center rounded" 
                      style="height: 450px;">
-                    <i class="bi bi-film" style="font-size: 4rem; color: var(--text-muted);"></i>
+                    <i class="bi bi-film" style="font-size: 4rem; opacity: 0.5;"></i>
                 </div>
             {% endif %}
             
@@ -218,11 +218,11 @@
                                      class="card-img-top" 
                                      alt="{{ similar.title }}"
                                      style="height: 250px; object-fit: cover;"
-                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x450?text=No+Poster'; this.style.backgroundColor='#374151';">
+                                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22450%22%3E%3Crect fill=%22%23374151%22 width=%22300%22 height=%22450%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2240%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';">
                             {% else %}
                                 <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
                                      style="height: 250px;">
-                                    <i class="bi bi-film" style="font-size: 2rem;"></i>
+                                    <i class="bi bi-film" style="font-size: 2rem; opacity: 0.5;"></i>
                                 </div>
                             {% endif %}
                             <div class="card-body p-2">
