@@ -131,10 +131,14 @@
                     <a href="{% url 'movie_detail' movie.id %}" style="text-decoration: none; color: inherit;">
                         <div class="card movie-card h-100">
                         {% if movie.poster_url %}
-                            <img src="{{ movie.poster_url }}" class="card-img-top" alt="{{ movie.title }}" onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'">
+                            <img src="{{ movie.poster_url }}" 
+                                 class="card-img-top" 
+                                 alt="{{ movie.title }}" 
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22750%22%3E%3Crect fill=%22%23374151%22 width=%22500%22 height=%22750%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2260%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';"
+                                 style="height: 450px; object-fit: cover;">
                         {% else %}
-                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 300px;">
-                                <i class="bi bi-film" style="font-size: 4rem;"></i>
+                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 450px;">
+                                <i class="bi bi-film" style="font-size: 4rem; opacity: 0.5;"></i>
                             </div>
                         {% endif %}
                         <div class="card-body">
