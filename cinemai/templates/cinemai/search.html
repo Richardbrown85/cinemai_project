@@ -11,7 +11,7 @@
         <i class="bi bi-info-circle"></i> 
         {% load custom_filters %}
         You have <strong>{{ user|searches_remaining }}</strong> searches remaining today. 
-        <a href="{% url 'subscription' %}" class="alert-link">Upgrade to Standard</a> for unlimited searches!
+        <a href="{% url 'subscription' %}" class="upgrade-link">Upgrade to Standard</a> for unlimited searches!
     </div>
     {% endif %}
     
@@ -110,7 +110,7 @@
                         <small>
                             <i class="bi bi-lock"></i> 
                             <strong>Advanced Filters</strong> (Year, Rating) are available with 
-                            <a href="{% url 'subscription' %}" class="alert-link">Standard subscription</a>
+                            <a href="{% url 'subscription' %}" class="upgrade-link">Standard subscription</a>
                         </small>
                     </div>
                     {% endif %}

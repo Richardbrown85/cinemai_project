@@ -177,6 +177,19 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0.375rem 0.75rem;
 }
 
+/* Upgrade Link Styling - Better Visibility */
+.upgrade-link {
+    color: var(--accent) !important;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: all 0.2s ease;
+}
+
+.upgrade-link:hover {
+    color: var(--accent-hover) !important;
+    text-decoration: none;
+}
+
 /* ========================================
    Cards
    ======================================== */
