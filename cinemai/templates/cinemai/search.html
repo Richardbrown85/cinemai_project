@@ -140,7 +140,7 @@
                         <div class="card-body">
                             <h5 class="card-title">{{ movie.title }}</h5>
                             {% if movie.year %}
-                                <p class="card-text text-muted small mb-2">{{ movie.year }}</p>
+                                <p class="card-text text-light-grey small mb-2">{{ movie.year }}</p>
                             {% endif %}
                             
                             <!-- AI Reasoning - Standard Only -->
@@ -149,7 +149,7 @@
                                     <span class="badge bg-gradient" style="background: linear-gradient(135deg, var(--accent) 0%, #2d8a7a 100%); font-weight: 500;">
                                         <i class="bi bi-stars"></i> AI Pick
                                     </span>
-                                    <p class="text-muted small mt-2 mb-0" style="font-style: italic;">
+                                    <p class="text-light-grey small mt-2 mb-0" style="font-style: italic;">
                                         "{{ movie.ai_reasoning }}"
                                     </p>
                                 </div>
@@ -159,13 +159,13 @@
                                 <p class="mb-2">
                                     <i class="bi bi-star-fill text-warning"></i> {{ movie.rating|floatformat:1 }}/10
                                     {% if movie.vote_count %}
-                                        <small class="text-muted">({{ movie.vote_count }} votes)</small>
+                                        <small class="text-light-grey">({{ movie.vote_count }} votes)</small>
                                     {% endif %}
                                 </p>
                             {% endif %}
                             
                             {% if movie.plot %}
-                                <p class="card-text text-muted small mt-2">{{ movie.plot|truncatewords:20 }}</p>
+                                <p class="card-text text-light-grey small mt-2">{{ movie.plot|truncatewords:20 }}</p>
                             {% endif %}
                         </div>
                         <div class="card-footer bg-transparent">

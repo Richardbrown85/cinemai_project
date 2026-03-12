@@ -190,6 +190,15 @@ h1, h2, h3, h4, h5, h6 {
     text-decoration: none;
 }
 
+/* Text Light Grey - WCAG AAA Compliant */
+.text-light-grey {
+    color: #D1D5DB !important;  /* Light grey with proper contrast */
+}
+
+.text-light-grey.small {
+    color: #D1D5DB !important;
+}
+
 /* ========================================
    Cards
    ======================================== */
