@@ -35,9 +35,10 @@
                 </div>
                 <ul class="pricing-features">
                     <li><i class="bi bi-check-circle text-success"></i> AI movie recommendations</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Personal watchlist</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Streaming availability</li>
-                    <li><i class="bi bi-check-circle text-success"></i> Movie details & ratings</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Personal watchlist</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Streaming availability</li>
+                        <li><i class="bi bi-check-circle text-success"></i> Movie details & ratings</li>
+                        <li><i class="bi bi-check-circle text-success"></i> 10 searches per day</li>
                 </ul>
                 {% if user.profile.subscription_tier == 'BASIC' %}
                     <button class="btn btn-secondary w-100" disabled>
@@ -64,9 +65,10 @@
                 </div>
                 <ul class="pricing-features">
                     <li><i class="bi bi-check-circle text-success"></i> Everything in Free</li>
-                    <li><i class="bi bi-check-circle text-success"></i> <strong>Unlimited searches</strong></li>
-                    <li><i class="bi bi-check-circle text-success"></i> <strong>Advanced filters</strong></li>
-                    <li><i class="bi bi-check-circle text-success"></i> <strong>Priority support</strong></li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>Unlimited searches</strong></li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>Advanced filters</strong></li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>AI Reasoning</strong></li>
+                        <li><i class="bi bi-check-circle text-success"></i> <strong>Priority support</strong></li>
                 </ul>
                 {% if user.profile.subscription_tier == 'STANDARD' %}
                     <button class="btn btn-secondary w-100" disabled>
