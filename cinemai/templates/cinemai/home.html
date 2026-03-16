@@ -3,8 +3,9 @@
 {% block title %}CinemAI - AI-Powered Movie Recommendations{% endblock %}
 
 {% block content %}
+
 <!-- Hero Section with Backdrop -->
-<div class="hero-landing">
+<section class="hero-landing">
     <div class="hero-backdrop"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
@@ -16,13 +17,13 @@
                     </h1>
                     <p class="hero-subtitle">Stop scrolling. Start watching.</p>
                     <a href="{% url 'signup' %}" class="btn btn-primary btn-hero">
-                    Get Started</a>
+                        Get Started</a>
                     <p class="hero-note mt-2">No credit card required</p>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- Features Section -->
 <section class="features-section py-4">
@@ -87,7 +88,7 @@
                     </a>
                 </div>
             </div>
-            
+
             <!-- Standard - £9.99 -->
             <div class="col-md-5 col-lg-4">
                 <div class="pricing-card pricing-card-featured">

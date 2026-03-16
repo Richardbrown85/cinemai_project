@@ -4,62 +4,60 @@
 
 {% block meta_description %}{{ movie.plot|truncatewords:30|default:"Discover details about "|add:movie.title|add:" including cast, ratings, streaming availability, and similar movie recommendations on CinemAI." }}{% endblock %}
 
-{% block meta_keywords %}{{ movie.title }}, movie details, watch {{ movie.title }}, streaming, cast, reviews{% endblock %}
+{% block meta_keywords %}{{ movie.title }}, movie details, watch {{ movie.title }}, streaming, cast,
+reviews{% endblock %}
 
 {% block og_title %}{{ movie.title }}{% if movie.year %} ({{ movie.year }}){% endif %} - CinemAI{% endblock %}
 
 {% block og_description %}{{ movie.plot|truncatewords:25 }}{% endblock %}
 
 {% block content %}
+
 <!-- Backdrop Image -->
 {% if movie.backdrop_url %}
 <div style="position: relative; width: 100%; height: 400px; overflow: hidden; margin-bottom: 2rem;">
-    <img src="{{ movie.backdrop_url }}" 
-         alt="{{ movie.title }} backdrop" 
-         style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);"
-         onerror="this.parentElement.style.display='none';">
+    <img src="{{ movie.backdrop_url }}" alt="{{ movie.title }} backdrop"
+        style="width: 100%; height: 100%; object-fit: cover; filter: brightness(0.4);"
+        onerror="this.parentElement.style.display='none';">
     <div style="position: absolute; bottom: 2rem; left: 2rem; color: white;">
         <h1 class="display-4 mb-0">{{ movie.title }}</h1>
         {% if movie.year %}
-            <p class="lead mb-0">({{ movie.year }})</p>
+        <p class="lead mb-0">({{ movie.year }})</p>
         {% endif %}
     </div>
 </div>
 {% endif %}
 
-<div class="container my-4">
+<section class="container my-4">
     <div class="row">
         <!-- Left Column: Poster -->
         <div class="col-md-4 mb-4">
             {% if movie.poster_url %}
-                <img src="{{ movie.poster_url }}" 
-                     alt="{{ movie.title }} poster" 
-                     class="img-fluid rounded" 
-                     style="width: 100%;"
-                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22750%22%3E%3Crect fill=%22%23374151%22 width=%22500%22 height=%22750%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2260%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';">
+            <img src="{{ movie.poster_url }}" alt="{{ movie.title }} poster" class="img-fluid rounded"
+                style="width: 100%;"
+                onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22500%22 height=%22750%22%3E%3Crect fill=%22%23374151%22 width=%22500%22 height=%22750%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2260%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';">
             {% else %}
-                <div class="bg-secondary d-flex align-items-center justify-content-center rounded" 
-                     style="height: 450px;">
-                    <i class="bi bi-film" style="font-size: 4rem; opacity: 0.5;"></i>
-                </div>
+            <div class="bg-secondary d-flex align-items-center justify-content-center rounded" style="height: 450px;">
+                <i class="bi bi-film" style="font-size: 4rem; opacity: 0.5;"></i>
+            </div>
             {% endif %}
-            
+
             <!-- Add to Watchlist Button -->
             <div class="mt-3">
                 {% if user.is_authenticated %}
-                    {% if in_watchlist %}
-                        <button class="btn btn-secondary w-100" disabled>
-                            <i class="bi bi-check-circle"></i> In Your Watchlist
-                        </button>
-                    {% else %}
-                        <a href="{% url 'add_to_watchlist' movie.id %}" class="btn btn-primary w-100">
-                            <i class="bi bi-bookmark-plus"></i> Add to Watchlist
-                        </a>
-                    {% endif %}
+                {% if in_watchlist %}
+                <button class="btn btn-secondary w-100" disabled>
+                    <i class="bi bi-check-circle"></i> In Your Watchlist
+                </button>
                 {% else %}
-                    <a href="{% url 'signup' %}" class="btn btn-outline-primary w-100">
-                        <i class="bi bi-bookmark-plus"></i> Sign Up to Save
-                    </a>
+                <a href="{% url 'add_to_watchlist' movie.id %}" class="btn btn-primary w-100">
+                    <i class="bi bi-bookmark-plus"></i> Add to Watchlist
+                </a>
+                {% endif %}
+                {% else %}
+                <a href="{% url 'signup' %}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-bookmark-plus"></i> Sign Up to Save
+                </a>
                 {% endif %}
             </div>
         </div>
@@ -69,22 +67,24 @@
             <!-- Rating & Genres -->
             <div class="mb-4">
                 {% if movie.rating %}
-                    <h3 style="color: var(--accent);">
-                        <i class="bi bi-star-fill"></i> {{ movie.rating|floatformat:1 }}/10
-                        {% if movie.vote_count %}
-                            <small class="text-light-grey" style="font-size: 1rem;">({{ movie.vote_count|floatformat:0 }} votes)</small>
-                        {% endif %}
-                    </h3>
+                <h3 style="color: var(--accent);">
+                    <i class="bi bi-star-fill"></i> {{ movie.rating|floatformat:1 }}/10
+                    {% if movie.vote_count %}
+                    <small class="text-light-grey" style="font-size: 1rem;">({{ movie.vote_count|floatformat:0 }}
+                        votes)</small>
+                    {% endif %}
+                </h3>
                 {% endif %}
-                
+
                 {% if genres %}
-                    <div class="mb-3">
-                        {% for genre in genres %}
-                            <span class="badge me-1" style="background: var(--bg-surface); border: 1px solid var(--border-subtle); font-size: 0.9rem;">
-                                {{ genre }}
-                            </span>
-                        {% endfor %}
-                    </div>
+                <div class="mb-3">
+                    {% for genre in genres %}
+                    <span class="badge me-1"
+                        style="background: var(--bg-surface); border: 1px solid var(--border-subtle); font-size: 0.9rem;">
+                        {{ genre }}
+                    </span>
+                    {% endfor %}
+                </div>
                 {% endif %}
             </div>
 
@@ -95,49 +95,49 @@
                     <h5 class="mb-3">
                         <i class="bi bi-tv" style="color: var(--accent);"></i> Where to Watch
                     </h5>
-                    
+
                     {% if movie.streaming_providers.flatrate %}
-                        <div class="mb-3">
-                            <p class="text-light-grey mb-2"><strong>Stream:</strong></p>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% for provider in movie.streaming_providers.flatrate %}
-                                    <span class="badge" style="background: var(--accent); color: #0F1F1B; font-size: 0.9rem; padding: 0.5rem 1rem;">
-                                        {{ provider.provider_name }}
-                                    </span>
-                                {% endfor %}
-                            </div>
+                    <div class="mb-3">
+                        <p class="text-light-grey mb-2"><strong>Stream:</strong></p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for provider in movie.streaming_providers.flatrate %}
+                            <span class="badge"
+                                style="background: var(--accent); color: #0F1F1B; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                {{ provider.provider_name }}
+                            </span>
+                            {% endfor %}
                         </div>
+                    </div>
                     {% endif %}
-                    
+
                     {% if movie.streaming_providers.rent %}
-                        <div class="mb-3">
-                            <p class="text-light-grey mb-2"><strong>Rent:</strong></p>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% for provider in movie.streaming_providers.rent %}
-                                    <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-                                        {{ provider.provider_name }}
-                                    </span>
-                                {% endfor %}
-                            </div>
+                    <div class="mb-3">
+                        <p class="text-light-grey mb-2"><strong>Rent:</strong></p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for provider in movie.streaming_providers.rent %}
+                            <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                {{ provider.provider_name }}
+                            </span>
+                            {% endfor %}
                         </div>
+                    </div>
                     {% endif %}
-                    
+
                     {% if movie.streaming_providers.buy %}
-                        <div>
-                            <p class="text-light-grey mb-2"><strong>Buy:</strong></p>
-                            <div class="d-flex flex-wrap gap-2">
-                                {% for provider in movie.streaming_providers.buy %}
-                                    <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-                                        {{ provider.provider_name }}
-                                    </span>
-                                {% endfor %}
-                            </div>
+                    <div>
+                        <p class="text-light-grey mb-2"><strong>Buy:</strong></p>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for provider in movie.streaming_providers.buy %}
+                            <span class="badge bg-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                {{ provider.provider_name }}
+                            </span>
+                            {% endfor %}
                         </div>
+                    </div>
                     {% endif %}
-                    
-                    <a href="https://www.justwatch.com/uk/search?q={{ movie.title|urlencode }}" 
-                       target="_blank" 
-                       class="btn btn-sm btn-outline-primary mt-3">
+
+                    <a href="https://www.justwatch.com/uk/search?q={{ movie.title|urlencode }}" target="_blank"
+                        class="btn btn-sm btn-outline-primary mt-3">
                         <i class="bi bi-box-arrow-up-right"></i> Find All Streaming Options
                     </a>
                 </div>
@@ -158,14 +158,15 @@
                 <h5><i class="bi bi-people" style="color: var(--accent);"></i> Cast</h5>
                 <div class="row g-3">
                     {% for actor in cast %}
-                        <div class="col-6 col-md-4">
-                            <div class="card h-100" style="background: var(--bg-surface); border: 1px solid var(--border-subtle);">
-                                <div class="card-body p-3">
-                                    <p class="mb-1" style="font-weight: 600;">{{ actor.name }}</p>
-                                    <p class="text-light-grey small mb-0">{{ actor.character }}</p>
-                                </div>
+                    <div class="col-6 col-md-4">
+                        <div class="card h-100"
+                            style="background: var(--bg-surface); border: 1px solid var(--border-subtle);">
+                            <div class="card-body p-3">
+                                <p class="mb-1" style="font-weight: 600;">{{ actor.name }}</p>
+                                <p class="text-light-grey small mb-0">{{ actor.character }}</p>
                             </div>
                         </div>
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -210,30 +211,28 @@
         <h4 class="mb-4"><i class="bi bi-film" style="color: var(--accent);"></i> Similar Movies</h4>
         <div class="row g-4">
             {% for similar in similar_movies %}
-                <div class="col-md-2 col-6">
-                    <a href="{% url 'movie_detail' similar.id %}" style="text-decoration: none; color: inherit;">
-                        <div class="card movie-card h-100">
-                            {% if similar.poster_url %}
-                                <img src="{{ similar.poster_url }}" 
-                                     class="card-img-top" 
-                                     alt="{{ similar.title }}"
-                                     style="height: 250px; object-fit: cover;"
-                                     onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22450%22%3E%3Crect fill=%22%23374151%22 width=%22300%22 height=%22450%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2240%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';">
-                            {% else %}
-                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" 
-                                     style="height: 250px;">
-                                    <i class="bi bi-film" style="font-size: 2rem; opacity: 0.5;"></i>
-                                </div>
-                            {% endif %}
-                            <div class="card-body p-2">
-                                <p class="small mb-0" style="font-weight: 600;">{{ similar.title }}</p>
-                                {% if similar.year %}
-                                    <p class="text-light-grey small mb-0">{{ similar.year }}</p>
-                                {% endif %}
-                            </div>
+            <div class="col-md-2 col-6">
+                <a href="{% url 'movie_detail' similar.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="card movie-card h-100">
+                        {% if similar.poster_url %}
+                        <img src="{{ similar.poster_url }}" class="card-img-top" alt="{{ similar.title }}"
+                            style="height: 250px; object-fit: cover;"
+                            onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22450%22%3E%3Crect fill=%22%23374151%22 width=%22300%22 height=%22450%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 fill=%22%239ca3af%22 font-size=%2240%22 font-family=%22sans-serif%22%3E🎬%3C/text%3E%3C/svg%3E';">
+                        {% else %}
+                        <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                            style="height: 250px;">
+                            <i class="bi bi-film" style="font-size: 2rem; opacity: 0.5;"></i>
                         </div>
-                    </a>
-                </div>
+                        {% endif %}
+                        <div class="card-body p-2">
+                            <p class="small mb-0" style="font-weight: 600;">{{ similar.title }}</p>
+                            {% if similar.year %}
+                            <p class="text-light-grey small mb-0">{{ similar.year }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            </div>
             {% endfor %}
         </div>
     </div>
@@ -245,5 +244,5 @@
             <i class="bi bi-arrow-left"></i> Back to Search
         </a>
     </div>
-</div>
+</section>
 {% endblock %}

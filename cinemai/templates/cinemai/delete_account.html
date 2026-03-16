@@ -3,33 +3,35 @@
 {% block title %}Delete Account - CinemAI{% endblock %}
 
 {% block content %}
-<div class="container my-5">
+
+<!-- Delete Account Section -->
+<section class="container my-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card p-4 border-danger">
                 <h3 class="text-danger mb-4">
                     <i class="bi bi-exclamation-triangle"></i> Delete Account
                 </h3>
-                
+
                 <div class="alert alert-danger">
                     <strong>Warning!</strong> This action cannot be undone.
                 </div>
-                
+
                 <p class="mb-4">
                     Deleting your account will permanently remove:
                 </p>
-                
+
                 <ul class="mb-4">
                     <li>Your profile information</li>
                     <li>Your watchlist and all saved movies</li>
                     <li>Your search history</li>
                     <li>Your subscription (if active)</li>
                 </ul>
-                
+
                 <p class="mb-4">
                     Are you sure you want to proceed?
                 </p>
-                
+
                 <form method="post">
                     {% csrf_token %}
                     <div class="d-flex gap-2">
@@ -44,5 +46,5 @@
             </div>
         </div>
     </div>
-</div>
+</section>
 {% endblock %}

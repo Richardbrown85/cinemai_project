@@ -1,27 +1,26 @@
 {% extends 'cinemai/base.html' %}
-{% load static %}
 
 {% block title %}Subscription - CinemAI{% endblock %}
 
 {% block content %}
+
 <!-- Test Mode Banner -->
 <div class="test-mode-banner">
     <strong>Test Mode:</strong> This site is in stripe test mode. Use test card 4242 4242 4242 4242 for payments.
 </div>
 
 <!-- Hidden data attributes for JavaScript -->
-<div id="stripe-data" 
-     data-stripe-key="{{ stripe_public_key }}"
-     data-checkout-url="{% url 'create_checkout_session' %}"
-     style="display: none;">
+<div id="stripe-data" data-stripe-key="{{ stripe_public_key }}" data-checkout-url="{% url 'create_checkout_session' %}"
+    style="display: none;">
 </div>
 
-<div class="container my-5">
+<!-- Subscription Section -->
+<section class="container my-5">
     <div class="text-center mb-5">
         <h2 class="mb-2">Choose Your Plan</h2>
         <p class="text-muted">Start free, upgrade anytime</p>
     </div>
-    
+
     <div class="row justify-content-center g-4 mb-5">
         <!-- Free Plan -->
         <div class="col-md-5 col-lg-4">
@@ -35,19 +34,19 @@
                 </div>
                 <ul class="pricing-features">
                     <li><i class="bi bi-check-circle text-success"></i> AI movie recommendations</li>
-                        <li><i class="bi bi-check-circle text-success"></i> Personal watchlist</li>
-                        <li><i class="bi bi-check-circle text-success"></i> Streaming availability</li>
-                        <li><i class="bi bi-check-circle text-success"></i> Movie details & ratings</li>
-                        <li><i class="bi bi-check-circle text-success"></i> 10 searches per day</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Personal watchlist</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Streaming availability</li>
+                    <li><i class="bi bi-check-circle text-success"></i> Movie details & ratings</li>
+                    <li><i class="bi bi-check-circle text-success"></i> 10 searches per day</li>
                 </ul>
                 {% if user.profile.subscription_tier == 'BASIC' %}
-                    <button class="btn btn-secondary w-100" disabled>
-                        <i class="bi bi-check-circle"></i> Current Plan
-                    </button>
+                <button class="btn btn-secondary w-100" disabled>
+                    <i class="bi bi-check-circle"></i> Current Plan
+                </button>
                 {% else %}
-                    <button class="btn btn-outline-primary w-100" disabled>
-                        Free Plan
-                    </button>
+                <button class="btn btn-outline-primary w-100" disabled>
+                    Free Plan
+                </button>
                 {% endif %}
             </div>
         </div>
@@ -65,24 +64,24 @@
                 </div>
                 <ul class="pricing-features">
                     <li><i class="bi bi-check-circle text-success"></i> Everything in Free</li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>Unlimited searches</strong></li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>Advanced filters</strong></li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>AI Reasoning</strong></li>
-                        <li><i class="bi bi-check-circle text-success"></i> <strong>Priority support</strong></li>
+                    <li><i class="bi bi-check-circle text-success"></i> <strong>Unlimited searches</strong></li>
+                    <li><i class="bi bi-check-circle text-success"></i> <strong>Advanced filters</strong></li>
+                    <li><i class="bi bi-check-circle text-success"></i> <strong>AI Reasoning</strong></li>
+                    <li><i class="bi bi-check-circle text-success"></i> <strong>Priority support</strong></li>
                 </ul>
                 {% if user.profile.subscription_tier == 'STANDARD' %}
-                    <button class="btn btn-secondary w-100" disabled>
-                        <i class="bi bi-check-circle"></i> Current Plan
-                    </button>
+                <button class="btn btn-secondary w-100" disabled>
+                    <i class="bi bi-check-circle"></i> Current Plan
+                </button>
                 {% else %}
-                    <button class="btn btn-primary w-100 subscribe-btn" data-tier="STANDARD">
-                        Standard (Test Mode)
-                    </button>
+                <button class="btn btn-primary w-100 subscribe-btn" data-tier="STANDARD">
+                    Standard (Test Mode)
+                </button>
                 {% endif %}
             </div>
         </div>
     </div>
-    
+
     <!-- Current Subscription Status -->
     <div class="card p-4">
         <h5 class="mb-3">
@@ -98,29 +97,29 @@
                 </p>
                 <p class="text-muted small mb-0">
                     {% if user.profile.subscription_tier == 'BASIC' %}
-                        You're on the free plan. Upgrade to unlock unlimited searches!
+                    You're on the free plan. Upgrade to unlock unlimited searches!
                     {% elif user.profile.subscription_tier == 'STANDARD' %}
-                        You have unlimited searches and advanced filters.
+                    You have unlimited searches and advanced filters.
                     {% else %}
-                        You have full access to all CinemAI features!
+                    You have full access to all CinemAI features!
                     {% endif %}
                 </p>
             </div>
             <span>
                 {% if user.profile.subscription_active %}
-                    <span class="badge" style="background: var(--success);">Active</span>
+                <span class="badge" style="background: var(--success);">Active</span>
                 {% else %}
-                    <span class="badge bg-secondary">Free</span>
+                <span class="badge bg-secondary">Free</span>
                 {% endif %}
             </span>
         </div>
         {% if user.profile.subscription_end_date %}
-            <p class="text-muted small mt-2 mb-0">
-                <i class="bi bi-calendar"></i> Renewal Date: {{ user.profile.subscription_end_date|date:"d M Y" }}
-            </p>
+        <p class="text-muted small mt-2 mb-0">
+            <i class="bi bi-calendar"></i> Renewal Date: {{ user.profile.subscription_end_date|date:"d M Y" }}
+        </p>
         {% endif %}
     </div>
-</div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
