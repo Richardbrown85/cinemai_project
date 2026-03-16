@@ -1,14 +1,10 @@
-/* =============================================================================
-   CinemAI - Modern Dark Theme Stylesheet
-   Clean, organized, maintainable, WCAG AAA compliant
-   ============================================================================= */
-
-/* Import Google Fonts */
+/* CinemAI - Modern Dark Theme Stylesheet */
+   
+   /* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
 
-/* =============================================================================
-   CSS VARIABLES - Single Source of Truth
-   ============================================================================= */
+/* CSS VARIABLES */
+
 :root {
     /* Background Colors */
     --bg-primary: #121417;
@@ -16,12 +12,12 @@
     
     /* Text Colors */
     --text-primary: #F9FAFB;
-    --text-secondary: #D1D5DB;      /* WCAG AAA compliant - replaces text-muted */
+    --text-secondary: #D1D5DB;      
     
     /* Brand Colors */
     --accent: #3FA897;
     --accent-hover: #359680;
-    --accent-text: #0F1F1B;         /* Text on accent backgrounds */
+    --accent-text: #0F1F1B;         
     
     /* UI Colors */
     --border-subtle: #2A2F36;
@@ -30,9 +26,8 @@
     --warning: #F59E0B;
 }
 
-/* =============================================================================
-   GLOBAL STYLES
-   ============================================================================= */
+/* GLOBAL STYLES */
+
 * {
     box-sizing: border-box;
 }
@@ -65,9 +60,8 @@ a:hover {
     color: var(--accent-hover);
 }
 
-/* =============================================================================
-   UTILITY CLASSES
-   ============================================================================= */
+/* UTILITY CLASSES */
+
 .text-primary {
     color: var(--text-primary) !important;
 }
@@ -110,9 +104,8 @@ a:hover {
     background-color: var(--error) !important;
 }
 
-/* =============================================================================
-   NAVIGATION
-   ============================================================================= */
+/* NAVIGATION */
+
 .navbar {
     background-color: var(--bg-surface) !important;
     padding: 1.25rem 2rem;
@@ -152,9 +145,67 @@ a:hover {
     margin-right: 0.35rem;
 }
 
-/* =============================================================================
-   BUTTONS
-   ============================================================================= */
+/* HERO SECTIONS */
+
+.hero-landing {
+    position: relative;
+    min-height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-backdrop {
+    position: absolute;
+    inset: 0;
+    background-image: url(../images/hero-section-image.webp);
+    background-size: cover;
+    background-position: center;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    z-index: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(18, 20, 23, 0.2) 0%, rgba(18, 20, 23, 0.9) 50%, rgba(18, 20, 23, 1) 100%);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 4rem 0;
+}
+
+.hero-title {
+    font-family: "DM Sans", sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-title i {
+    color: var(--accent);
+}
+
+.hero-subtitle {
+    font-size: 1.4rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+}
+
+.hero-note {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+/* BUTTONS */
+
 .btn-primary {
     background: var(--accent);
     color: var(--accent-text) !important;
@@ -253,6 +304,7 @@ a:hover {
 }
 
 /* Watchlist Buttons */
+
 .watchlist-buttons {
     display: flex;
     gap: 0.5rem;
@@ -274,9 +326,8 @@ a:hover {
     padding: 0.375rem 0.75rem;
 }
 
-/* =============================================================================
-   CARDS
-   ============================================================================= */
+/* CARDS */
+
 .card {
     background: var(--bg-surface);
     border: 1px solid var(--border-subtle);
@@ -322,6 +373,7 @@ a:hover {
 }
 
 /* Movie Cards */
+
 .movie-card {
     transition: all 0.3s ease;
     cursor: pointer;
@@ -361,6 +413,7 @@ a:hover {
 }
 
 /* Subscription Cards */
+
 .subscription-card {
     display: flex;
     flex-direction: column;
@@ -376,6 +429,7 @@ a:hover {
 }
 
 /* Pricing Cards */
+
 .pricing-card {
     background: var(--bg-primary);
     border: 1px solid var(--border-subtle);
@@ -460,6 +514,7 @@ a:hover {
 }
 
 /* Feature Cards */
+
 .feature-card {
     text-align: center;
     padding: 2rem 1.5rem;
@@ -487,9 +542,8 @@ a:hover {
     line-height: 1.6;
 }
 
-/* =============================================================================
-   FORMS
-   ============================================================================= */
+/* FORMS */
+
 .form-control {
     background-color: var(--bg-surface);
     border: 1px solid var(--border-subtle);
@@ -518,6 +572,7 @@ a:hover {
 }
 
 /* Browser autofill override */
+
 .form-control:-webkit-autofill,
 .form-control:-webkit-autofill:hover,
 .form-control:-webkit-autofill:focus {
@@ -526,9 +581,8 @@ a:hover {
     transition: background-color 5000s ease-in-out 0s !important;
 }
 
-/* =============================================================================
-   ALERTS
-   ============================================================================= */
+/* ALERTS */
+
 .alert {
     border-radius: 8px;
     border: 1px solid var(--border-subtle);
@@ -558,9 +612,8 @@ a:hover {
     color: var(--warning);
 }
 
-/* =============================================================================
-   BADGES
-   ============================================================================= */
+/* BADGES */
+
 .badge.bg-success {
     background-color: var(--accent) !important;
     color: var(--accent-text) !important;
@@ -568,69 +621,10 @@ a:hover {
     letter-spacing: 0.01em;
 }
 
-/* =============================================================================
-   HERO SECTIONS
-   ============================================================================= */
-.hero-landing {
-    position: relative;
-    min-height: 90vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
 
-.hero-backdrop {
-    position: absolute;
-    inset: 0;
-    background-image: url(../images/hero-section-image.webp);
-    background-size: cover;
-    background-position: center;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
-    z-index: 0;
-}
 
-.hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, rgba(18, 20, 23, 0.2) 0%, rgba(18, 20, 23, 0.9) 50%, rgba(18, 20, 23, 1) 100%);
-    z-index: 1;
-}
+/* SEARCH INTERFACE */
 
-.hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 4rem 0;
-}
-
-.hero-title {
-    font-family: "DM Sans", sans-serif;
-    font-size: 3.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    line-height: 1.2;
-}
-
-.hero-title i {
-    color: var(--accent);
-}
-
-.hero-subtitle {
-    font-size: 1.4rem;
-    color: var(--text-secondary);
-    margin-bottom: 2.5rem;
-}
-
-.hero-note {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-}
-
-/* =============================================================================
-   SEARCH INTERFACE
-   ============================================================================= */
 .search-container {
     margin-top: 2.5rem;
 }
@@ -683,9 +677,7 @@ a:hover {
     margin-left: 8px;
 }
 
-/* =============================================================================
-   LINKS & TYPOGRAPHY
-   ============================================================================= */
+/* LINKS & TYPOGRAPHY */
 .upgrade-link {
     color: var(--accent) !important;
     font-weight: 600;
@@ -698,9 +690,7 @@ a:hover {
     text-decoration: none;
 }
 
-/* =============================================================================
-   SECTIONS
-   ============================================================================= */
+/* SECTIONS */
 .features-section {
     background: var(--bg-primary);
 }
@@ -735,9 +725,7 @@ a:hover {
     color: var(--text-primary);
 }
 
-/* =============================================================================
-   FOOTER
-   ============================================================================= */
+/* FOOTER */
 footer {
     background-color: var(--bg-surface);
     padding: 2rem 0;
@@ -770,9 +758,8 @@ footer a:hover {
     font-size: 2rem !important;
 }
 
-/* =============================================================================
-   TEST MODE BANNER
-   ============================================================================= */
+/* TEST MODE BANNER */
+
 .test-mode-banner {
     background: var(--accent);
     color: var(--accent-text);
@@ -792,9 +779,8 @@ footer a:hover {
     font-size: 1.1rem;
 }
 
-/* =============================================================================
-   ERROR PAGES
-   ============================================================================= */
+/* ERROR PAGES */
+
 .error-page-container {
     min-height: 70vh;
     display: flex;
@@ -816,9 +802,8 @@ footer a:hover {
     margin-bottom: 1rem;
 }
 
-/* =============================================================================
-   CUSTOM SCROLLBAR
-   ============================================================================= */
+/* CUSTOM SCROLLBAR */
+
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -836,10 +821,10 @@ footer a:hover {
     background: var(--accent);
 }
 
-/* =============================================================================
-   RESPONSIVE DESIGN
-   ============================================================================= */
-@media (max-width: 768px) {
+/* RESPONSIVE DESIGN - MEDIA QUERIES */
+
+/* Medium devices (tablets) */
+@media screen and (max-width: 768px) {
     .navbar {
         padding: 1rem;
     }
@@ -881,7 +866,8 @@ footer a:hover {
     }
 }
 
-@media (max-width: 576px) {
+/* Small devices (phones) */
+@media screen and (max-width: 576px) {
     body {
         padding-top: 60px;
     }
