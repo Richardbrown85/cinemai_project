@@ -621,8 +621,6 @@ a:hover {
     letter-spacing: 0.01em;
 }
 
-
-
 /* SEARCH INTERFACE */
 
 .search-container {
@@ -723,6 +721,18 @@ a:hover {
     font-size: 2rem;
     font-weight: 600;
     color: var(--text-primary);
+}
+
+/* Email Icon Styling */
+.email-icon {
+    font-size: 5rem;
+    color: var(--accent);
+}
+
+/* Success Icon Styling */
+.success-icon {
+    font-size: 5rem;
+    color: var(--success);
 }
 
 /* FOOTER */
