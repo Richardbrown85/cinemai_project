@@ -67,13 +67,13 @@ reviews{% endblock %}
             <!-- Rating & Genres -->
             <div class="mb-4">
                 {% if movie.rating %}
-                <h3 style="color: var(--accent);">
+                <h2 class="rating-display">
                     <i class="bi bi-star-fill"></i> {{ movie.rating|floatformat:1 }}/10
                     {% if movie.vote_count %}
-                    <small class="text-light-grey" style="font-size: 1rem;">({{ movie.vote_count|floatformat:0 }}
+                    <small class="text-light-grey vote-count">({{ movie.vote_count|floatformat:0 }}
                         votes)</small>
                     {% endif %}
-                </h3>
+                </h2>
                 {% endif %}
 
                 {% if genres %}
@@ -92,9 +92,9 @@ reviews{% endblock %}
             {% if movie.streaming_providers %}
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="mb-3">
+                    <h3 class="mb-3">
                         <i class="bi bi-tv" style="color: var(--accent);"></i> Where to Watch
-                    </h5>
+                    </h3>
 
                     {% if movie.streaming_providers.flatrate %}
                     <div class="mb-3">
@@ -147,7 +147,7 @@ reviews{% endblock %}
             <!-- Overview -->
             {% if movie.plot %}
             <div class="mb-4">
-                <h5><i class="bi bi-book" style="color: var(--accent);"></i> Overview</h5>
+                <h3><i class="bi bi-book" style="color: var(--accent);"></i> Overview</h3>
                 <p>{{ movie.plot }}</p>
             </div>
             {% endif %}
@@ -155,7 +155,7 @@ reviews{% endblock %}
             <!-- Cast -->
             {% if cast %}
             <div class="mb-4">
-                <h5><i class="bi bi-people" style="color: var(--accent);"></i> Cast</h5>
+                <h3><i class="bi bi-people" style="color: var(--accent);"></i> Cast</h3>
                 <div class="row g-3">
                     {% for actor in cast %}
                     <div class="col-6 col-md-4">
@@ -176,7 +176,7 @@ reviews{% endblock %}
             {% if movie_details %}
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="mb-3"><i class="bi bi-info-circle" style="color: var(--accent);"></i> Details</h5>
+                    <h3 class="mb-3"><i class="bi bi-info-circle" style="color: var(--accent);"></i> Details</h3>
                     <div class="row">
                         {% if movie_details.runtime %}
                         <div class="col-md-6 mb-2">
@@ -208,7 +208,7 @@ reviews{% endblock %}
     <!-- Similar Movies -->
     {% if similar_movies %}
     <div class="mt-5">
-        <h4 class="mb-4"><i class="bi bi-film" style="color: var(--accent);"></i> Similar Movies</h4>
+        <h2 class="mb-4"><i class="bi bi-film" style="color: var(--accent);"></i> Similar Movies</h2>
         <div class="row g-4">
             {% for similar in similar_movies %}
             <div class="col-md-2 col-6">

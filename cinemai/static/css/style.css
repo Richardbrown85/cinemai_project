@@ -735,6 +735,16 @@ a:hover {
     color: var(--success);
 }
 
+/* Movie Detail Page - Rating Display */
+.rating-display {
+    color: var(--accent);
+    font-size: 1.75rem;
+}
+
+.rating-display .vote-count {
+    font-size: 1rem;
+}
+
 /* FOOTER */
 footer {
     background-color: var(--bg-surface);
