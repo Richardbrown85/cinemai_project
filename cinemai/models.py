@@ -1,14 +1,20 @@
-from django.db import models
+"""
+CinemAI Models
+Database models for user profiles, movies, watchlists, and search tracking.
+Handles subscription tiers, rate limiting, and TMDB integration.
+"""
 
-# Create your models here.
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
+
 class SubscriptionTier(models.TextChoices):
+    """Available subscription tiers with pricing"""
     BASIC = 'BASIC', 'Basic - Free'
     STANDARD = 'STANDARD', 'Standard - £9.99/month'
+
 
 class SearchLog(models.Model):
     """Track user searches for rate limiting"""
@@ -36,7 +42,7 @@ class SearchLog(models.Model):
     
     @staticmethod
     def can_search(user):
-        """Check if user can perform another search"""
+        """Check if user can perform another search based on subscription tier"""
         # Standard users have unlimited searches
         if hasattr(user, 'profile') and user.profile.subscription_tier == 'STANDARD':
             return True, 0  # unlimited
@@ -52,7 +58,12 @@ class SearchLog(models.Model):
         
         return True, remaining  # can search, X remaining
 
+
 class UserProfile(models.Model):
+    """
+    Extended user profile for subscription management.
+    Automatically created for each user via post_save signal.
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     subscription_tier = models.CharField(
         max_length=10,
@@ -71,23 +82,33 @@ class UserProfile(models.Model):
 
     @property
     def tier_price(self):
+        """Get monthly price for current subscription tier"""
         prices = {
             'BASIC': 0.00,
             'STANDARD': 9.99,
         }
         return prices.get(self.subscription_tier, 0)
 
+
+# Signal handlers for automatic UserProfile creation
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+    """Create UserProfile when User is created"""
     if created:
         UserProfile.objects.create(user=instance)
 
+
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    """Save UserProfile when User is saved"""
     instance.profile.save()
 
 
 class Movie(models.Model):
+    """
+    Movie model storing TMDB data and streaming availability.
+    Cached from TMDB API to reduce external API calls.
+    """
     title = models.CharField(max_length=255)
     year = models.IntegerField(null=True, blank=True)
     genre = models.CharField(max_length=100, blank=True)
@@ -110,7 +131,7 @@ class Movie(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.title} ({self.year})"
+        return f"{self.title} ({self.year})" if self.year else self.title
 
     class Meta:
         ordering = ['-popularity', '-created_at']
@@ -124,6 +145,10 @@ class Movie(models.Model):
 
 
 class Watchlist(models.Model):
+    """
+    User's personal watchlist with watched status and notes.
+    Enforces unique constraint per user-movie combination.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='watchlist')
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     added_at = models.DateTimeField(auto_now_add=True)
@@ -139,6 +164,10 @@ class Watchlist(models.Model):
 
 
 class SearchHistory(models.Model):
+    """
+    Tracks all user search queries for history and analytics.
+    Separate from SearchLog which is used for rate limiting.
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='search_history')
     query = models.CharField(max_length=255)
     genre = models.CharField(max_length=100, blank=True)
