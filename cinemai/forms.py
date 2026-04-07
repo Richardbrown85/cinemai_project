@@ -1,9 +1,22 @@
+"""
+CinemAI Forms
+Django forms for user authentication, profile management, and watchlist functionality.
+All forms include Bootstrap styling for consistent UI.
+"""
+
 from django import forms
+
+# Create your forms here.
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from .models import UserProfile, Watchlist
 
+
 class SignUpForm(UserCreationForm):
+    """
+    User registration form with email validation.
+    Extends Django's UserCreationForm with email field and Bootstrap styling.
+    """
     email = forms.EmailField(
         max_length=254,
         required=True,
@@ -39,6 +52,7 @@ class SignUpForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
     def clean_email(self):
+        """Validate email uniqueness"""
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError('This email is already registered.')
@@ -46,6 +60,10 @@ class SignUpForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
+    """
+    User login form with Bootstrap styling.
+    Extends Django's AuthenticationForm.
+    """
     username = forms.CharField(
         widget=forms.TextInput(attrs={
             'class': 'form-control',
@@ -61,6 +79,10 @@ class LoginForm(AuthenticationForm):
 
 
 class UserUpdateForm(forms.ModelForm):
+    """
+    User account update form.
+    Allows users to update username, email, and optional name fields.
+    """
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={
             'class': 'form-control'
@@ -95,6 +117,10 @@ class UserUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
+    """
+    Subscription tier update form.
+    Allows users to change their subscription level.
+    """
     class Meta:
         model = UserProfile
         fields = ['subscription_tier']
@@ -106,6 +132,10 @@ class ProfileUpdateForm(forms.ModelForm):
 
 
 class WatchlistForm(forms.ModelForm):
+    """
+    Watchlist item update form.
+    Allows users to mark movies as watched and add personal notes.
+    """
     notes = forms.CharField(
         required=False,
         widget=forms.Textarea(attrs={
