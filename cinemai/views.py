@@ -1,3 +1,9 @@
+"""
+CinemAI Views
+Handles all HTTP requests and responses for the movie recommendation platform.
+Includes authentication, AI-powered search, watchlist management, and Stripe subscription integration.
+"""
+
 from django.shortcuts import render
 
 # Create your views here.
